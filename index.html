@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ご相談フォーム</title>
+  <meta name="description" content="お部屋探しのご希望条件を1分ほどで入力できる相談フォームです。" />
+  <style>
+    :root{
+      --bg: #f7faf8;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #1f9d63;       /* メインの綺麗な緑 */
+      --accent-2: #0f7a4a;     /* 濃い緑 */
+      --accent-soft: #e7f7ef; /* 淡い緑背景 */
+      --danger: #dc2626;
+      --shadow: 0 10px 28px rgba(2, 24, 12, 0.08);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 500px at 85% -10%, var(--accent-soft), transparent 60%),
+        radial-gradient(900px 500px at -10% 10%, #f0fbf5, transparent 55%),
+        var(--bg);
+    }
+
+    .page{
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 20px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(247, 250, 248, 0.8);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .header-inner{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .brand-badge{
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background:
+        linear-gradient(135deg, var(--accent), #38d48a);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+    }
+    .brand small{
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .container{
+      width: min(920px, 92vw);
+      margin: 0 auto 24px;
+    }
+
+    .hero{
+      background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 26px 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after{
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -140px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(31,157,99,0.18), transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero h1{
+      margin: 0 0 8px;
+      font-size: clamp(22px, 3.2vw, 28px);
+    }
+    .hero p{
+      margin: 0 0 10px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .hero .meta{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(31,157,99,0.18);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--accent-2);
+      font-weight: 600;
+    }
+
+    form{
+      margin-top: 18px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 10px 0 4px;
+    }
+
+    .section{
+      padding: 18px 22px 6px;
+      border-top: 1px dashed rgba(0,0,0,0.06);
+    }
+    .section:first-child{ border-top: none; }
+
+    .section-title{
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 0 0 12px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .section-title .req{
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .section-sub{
+      margin: -6px 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .field{
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    label{
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea{
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px 12px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      transition: border .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    textarea{
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder{
+      color: #9aa3af;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(31,157,99,0.55);
+      box-shadow: 0 0 0 4px rgba(31,157,99,0.12);
+      background: #fcfffd;
+    }
+
+    .grid-2{
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px){
+      .grid-2{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .checks, .radios{
+      display: grid;
+      gap: 10px 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (min-width: 720px){
+      .checks, .radios{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .check-item, .radio-item{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      transition: border .15s ease, background .15s ease, transform .08s ease;
+    }
+    .check-item:hover, .radio-item:hover{
+      border-color: rgba(31,157,99,0.35);
+      background: #fbfffd;
+    }
+    .check-item:active, .radio-item:active{
+      transform: translateY(1px);
+    }
+
+    input[type="checkbox"],
+    input[type="radio"]{
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .hint{
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .actions{
+      padding: 18px 22px 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .btn{
+      border: none;
+      border-radius: 14px;
+      padding: 14px 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
+    }
+    .btn-primary{
+      background: linear-gradient(135deg, var(--accent), #39d489);
+      color: white;
+      box-shadow: 0 10px 18px rgba(31,157,99,0.22);
+    }
+    .btn-primary:hover{
+      filter: brightness(1.02);
+    }
+    .btn-primary:active{
+      transform: translateY(1px);
+    }
+
+    .btn-ghost{
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #111827;
+    }
+
+    .error{
+      color: var(--danger);
+      font-size: 11.5px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .preview{
+      margin-top: 14px;
+      background: #0b1a12;
+      color: #d1fae5;
+      border-radius: var(--radius-md);
+      padding: 14px 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    footer{
+      padding: 10px 18px 26px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .pill-note{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .divider-soft{
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(31,157,99,0.18), transparent);
+      margin: 12px 0 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-badge" aria-hidden="true"></span>
+          <div>
+            <div>ご相談フォーム</div>
+            <small>Room Inquiry</small>
+          </div>
+        </div>
+        <div class="pill-note">約1分で入力</div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <span class="meta">希望条件の入力 → 担当よりご連絡</span>
+        <h1>スムーズにお部屋探しを始めましょう</h1>
+        <p>
+          下記の項目にご回答いただいた後、担当者よりご連絡いたします。<br>
+          条件をすり合わせたうえで、候補物件のご提案をスタートします。
+        </p>
+        <div class="divider-soft"></div>
+        <p class="hint">
+          入力内容は仮送信デモです（このHTML単体ではサーバー送信しません）。
+          実運用では送信先APIに接続してください。
+        </p>
+      </section>
+
+      <form id="consultForm" novalidate>
+        <!-- 基本情報 -->
+        <div class="section">
+          <div class="grid-2">
+            <div class="field">
+              <div class="section-title">お名前 <span class="req">必須</span></div>
+              <div class="section-sub">ひらがなだけでも可能です</div>
+              <label for="name">お名前</label>
+              <input id="name" name="name" type="text" placeholder="例：ねお" required />
+              <div class="error" data-error-for="name">お名前を入力してください。</div>
+            </div>
+
+            <div class="field">
+              <div class="section-title">ご職業 <span class="req">必須</span></div>
+              <label for="occupation">ご職業</label>
+              <select id="occupation" name="occupation" required>
+                <option value="">選択してください</option>
+                <option>会社員</option>
+                <option>公務員</option>
+                <option>派遣・アルバイト</option>
+                <option>個人事業主・自営業</option>
+                <option>経営者・役員</option>
+                <option>夜職</option>
+                <option>学生</option>
+                <option>無職・その他</option>
+              </select>
+              <div class="error" data-error-for="occupation">ご職業を選択してください。</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <div class="section-title">ご入居時期 <span class="req">必須</span></div>
+              <label for="moveIn">ご入居時期</label>
+              <select id="moveIn" name="moveIn" required>
+                <option value="">選択してください</option>
+                <option>1ヶ月以内</option>
+                <option>1〜2ヶ月以内</option>
+                <option>2〜3ヶ月以内</option>
+                <option>それ以上先</option>
+                <option>未定</option>
+              </select>
+              <div class="error" data-error-for="moveIn">ご入居時期を選択してください。</div>
+            </div>
+
+            <div class="field">
+              <div class="section-title">職場の最寄り駅 <span class="hint">任意</span></div>
+              <label for="workStation">職場の最寄り駅（任意）</label>
+              <input id="workStation" name="workStation" type="text" placeholder="例：新宿 / 渋谷 / 大手町" />
+              <div class="hint">通勤目安や路線提案に使います。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 住み替え理由 -->
+        <div class="section">
+          <div class="section-title">住み替えの理由 <span class="req">必須</span></div>
+          <div class="section-sub">該当するものを選択してください（複数可）</div>
+
+          <div class="checks" role="group" aria-label="住み替えの理由">
+            <label class="check-item"><input type="checkbox" name="reasons" value="転勤・転職" />転勤・転職</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="同棲" />同棲</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="更新" />更新</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="独立" />独立</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="現状の不満" />現状の不満</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="気分転換" />気分転換</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="その他" />その他</label>
+          </div>
+          <div class="error" data-error-for="reasons">住み替え理由を1つ以上選択してください。</div>
+        </div>
+
+        <!-- 希望条件 -->
+        <div class="section">
+          <div class="section-title">希望条件</div>
+
+          <div class="field">
+            <div class="section-title">希望エリア <span class="req">必須</span></div>
+            <label for="area">希望エリア</label>
+            <input id="area" name="area" type="text" placeholder="例：中野 / 新宿 / 目黒 / 山手線内側 など" required />
+            <div class="hint">複数エリアOK。優先順位があれば一緒に記載してください。</div>
+            <div class="error" data-error-for="area">希望エリアを入力してください。</div>
+          </div>
+
+          <div class="field">
+            <div class="section-title">希望の間取り <span class="req">必須</span></div>
+            <div class="section-sub">該当するものを選択してください（複数可）</div>
+            <div class="checks" role="group" aria-label="希望の間取り">
+              <label class="check-item"><input type="checkbox" name="layouts" value="1R" />1R</label>
+              <label class="check-item"><input type="checkbox" name="layouts" value="1K" />1K</label>
+              <label class="check-item"><input type="checkbox" name="layouts" value="1DK" />1DK</label>
+              <label class="check-item"><input type="checkbox" name="layouts" value="1LDK" />1LDK</label>
+              <label class="check-item"><input type="checkbox" name="layouts" value="2LDK" />2LDK</label>
+              <label class="check-item"><input type="checkbox" name="layouts" value="3LDK" />3LDK</label>
+            </div>
+            <div class="error" data-error-for="layouts">希望の間取りを1つ以上選択してください。</div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field">
+              <div class="section-title">お家賃の上限 <span class="req">必須</span></div>
+              <label for="rentMax">お家賃の上限（管理費込）</label>
+              <input
+                id="rentMax"
+                name="rentMax"
+                type="number"
+                inputmode="decimal"
+                step="0.1"
+                min="0"
+                placeholder="例：12 / 13.5 / 15"
+                required
+              />
+              <div class="hint">単位は「万円」を想定しています。</div>
+              <div class="error" data-error-for="rentMax">お家賃の上限を入力してください。</div>
+            </div>
+
+            <div class="field">
+              <div class="section-title">築年数 <span class="hint">任意</span></div>
+              <label for="age">築年数（任意）</label>
+              <select id="age" name="age">
+                <option value="">選択してください</option>
+                <option>1年以内</option>
+                <option>3年以内</option>
+                <option>5年以内</option>
+                <option>7年以内</option>
+                <option>10年以内</option>
+                <option>15年以内</option>
+                <option>20年以内</option>
+                <option>その他</option>
+              </select>
+              <div class="hint">こだわりがなければ未選択でOK。</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="section-title">こだわり条件 <span class="hint">任意</span></div>
+            <label for="preferences">こだわり条件（任意）</label>
+            <textarea
+              id="preferences"
+              name="preferences"
+              placeholder="例：2階以上 / バストイレ別 / 宅配BOX / 角部屋 / ペット可 / 仕事用デスクが置ける広さ など"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- 連絡先 -->
+        <div class="section">
+          <div class="section-title">ご連絡先</div>
+
+          <div class="field">
+            <div class="section-title">お電話番号 <span class="req">必須</span></div>
+            <label for="phone">お電話番号</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputmode="tel"
+              placeholder="例：09012345678"
+              required
+              pattern="^[0-9-+ ]{9,15}$"
+            />
+            <div class="hint">ハイフンありでもOK（例：090-1234-5678）。</div>
+            <div class="error" data-error-for="phone">有効なお電話番号を入力してください。</div>
+          </div>
+        </div>
+
+        <!-- アクション -->
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">回答する</button>
+          <button class="btn btn-ghost" type="reset">入力をリセット</button>
+          <div id="formMsg" class="hint"></div>
+          <pre id="preview" class="preview"></pre>
+        </div>
+      </form>
+    </main>
+
+    <footer>
+      ※このフォームはサンプルUIです。実運用ではプライバシーポリシーの表示と送信先の実装を行ってください。
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const form = document.getElementById("consultForm");
+      const preview = document.getElementById("preview");
+      const msg = document.getElementById("formMsg");
+
+      const showError = (name, on) => {
+        const el = document.querySelector(`[data-error-for="${name}"]`);
+        if(!el) return;
+        el.style.display = on ? "block" : "none";
+      };
+
+      const getCheckedValues = (selector) => {
+        return Array.from(document.querySelectorAll(selector))
+          .filter(i => i.checked)
+          .map(i => i.value);
+      };
+
+      const validate = () => {
+        let ok = true;
+
+        const name = form.name.value.trim();
+        const occupation = form.occupation.value.trim();
+        const moveIn = form.moveIn.value.trim();
+        const area = form.area.value.trim();
+        const rentMax = form.rentMax.value;
+        const phone = form.phone.value.trim();
+
+        const reasons = getCheckedValues(`input[name="reasons"]`);
+        const layouts = getCheckedValues(`input[name="layouts"]`);
+
+        // reset errors
+        ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
+          .forEach(k => showError(k, false));
+
+        if(!name){ showError("name", true); ok = false; }
+        if(!occupation){ showError("occupation", true); ok = false; }
+        if(!moveIn){ showError("moveIn", true); ok = false; }
+
+        if(reasons.length === 0){ showError("reasons", true); ok = false; }
+
+        if(!area){ showError("area", true); ok = false; }
+        if(layouts.length === 0){ showError("layouts", true); ok = false; }
+
+        if(rentMax === "" || Number(rentMax) <= 0){
+          showError("rentMax", true); ok = false;
+        }
+
+        const phonePattern = /^[0-9-+ ]{9,15}$/;
+        if(!phone || !phonePattern.test(phone)){
+          showError("phone", true); ok = false;
+        }
+
+        return ok;
+      };
+
+      const buildPayload = () => {
+        return {
+          name: form.name.value.trim(),
+          occupation: form.occupation.value.trim(),
+          moveIn: form.moveIn.value.trim(),
+          reasons: getCheckedValues(`input[name="reasons"]`),
+          area: form.area.value.trim(),
+          workStation: form.workStation.value.trim(),
+          layouts: getCheckedValues(`input[name="layouts"]`),
+          rentMaxManYen: Number(form.rentMax.value || 0),
+          buildingAge: form.age.value.trim(),
+          preferences: form.preferences.value.trim(),
+          phone: form.phone.value.trim(),
+          submittedAt: new Date().toISOString()
+        };
+      };
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        msg.textContent = "";
+
+        const ok = validate();
+        if(!ok){
+          msg.textContent = "未入力の必須項目があります。赤いメッセージをご確認ください。";
+          preview.style.display = "none";
+          return;
+        }
+
+        const payload = buildPayload();
+
+        // demo preview
+        preview.textContent =
+          "✅ 送信デモ（このHTML単体ではサーバー送信しません）\\n\\n" +
+          JSON.stringify(payload, null, 2);
+
+        preview.style.display = "block";
+        msg.textContent =
+          "入力ありがとうございます。実運用ではここでAPI送信やLINE連携に接続できます。";
+      });
+
+      form.addEventListener("reset", () => {
+        ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
+          .forEach(k => showError(k, false));
+        preview.style.display = "none";
+        msg.textContent = "";
+      });
+    })();
+  </script>
+</body>
+</html>
