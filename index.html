@@ -398,7 +398,6 @@
 
     /* ===== 完了（サンクス）画面の“完了感”UI ===== */
 
-    /* 完了カードをやや上寄りに見せるためのラッパ */
     .thankyou-stage{
       position: relative;
       min-height: 62vh;
@@ -422,7 +421,6 @@
       text-align: center;
     }
 
-    /* 控えめフェードイン */
     @keyframes fadeInSoft {
       from { opacity: 0; transform: translateY(4px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -469,7 +467,6 @@
       margin: 0 0 14px;
     }
 
-    /* “切り分けて下にレイアウト”する一行 */
     .thankyou-secondary{
       font-size: 12.5px;
       color: #556070;
@@ -477,7 +474,6 @@
       margin: 0;
     }
 
-    /* カード下の小さな補足ライン（1行） */
     .thankyou-footnote{
       text-align: center;
       margin-top: 10px;
@@ -533,31 +529,30 @@
       <div class="thankyou-stage" id="thankYouStage" style="display:none;">
         <div style="width:100%;">
           <section class="thankyou" id="thankYouSection">
-            <!-- ✅/チェックアイコン入り丸バッジ -->
             <div class="done-badge" aria-hidden="true">
               <svg viewBox="0 0 24 24" role="img" aria-label="完了">
                 <path fill="#ffffff" d="M9.0 16.2l-3.5-3.5a1 1 0 0 1 1.4-1.4l2.8 2.8 7.3-7.3a1 1 0 1 1 1.4 1.4l-8.0 8.0a1 1 0 0 1-1.4 0z"/>
               </svg>
             </div>
 
-            <!-- 小さく「送信完了」を添える -->
             <div class="done-kicker">送信完了</div>
 
             <h2>ご回答ありがとうございます😌</h2>
 
+            <!-- ここを指定の改行・文面に更新 -->
             <p class="thankyou-body">
-              いただいた内容をもとに、<br>
-              未公開物件も含めて条件に合うお部屋をピックアップします。<br>
-              無理なご提案はいたしませんので、ご安心くださいませ。
+              いただいた内容をもとに、未公開物件も含めて<br>
+              条件に合うお部屋をピックアップします。<br>
+              無理なご提案はいたしませんので、<br>
+              ご安心くださいませ。
             </p>
 
-            <!-- 切り分けて下に配置する一文 -->
             <p class="thankyou-secondary">
-              気になる点やご希望があれば、いつでも遠慮なくお知らせください。
+              気になる点やご希望があれば、<br>
+              いつでも遠慮なくお知らせください。
             </p>
           </section>
 
-          <!-- カード下の小さな補足ライン（1行） -->
           <div class="thankyou-footnote">
             送信内容を確認後、できるだけスムーズにご連絡いたします。
           </div>
@@ -628,7 +623,6 @@
             <label class="check-item"><input type="checkbox" name="reasons" value="その他" id="reasonOtherChk" />その他</label>
           </div>
 
-          <!-- 「その他」入力欄 -->
           <div class="other-reason-wrap" id="otherReasonWrap">
             <div class="field" style="margin-top:12px;">
               <textarea
@@ -781,7 +775,6 @@
       const headerForm = document.getElementById("headerForm");
       const headerThanks = document.getElementById("headerThanks");
 
-      // 「その他」理由UI
       const reasonOtherChk = document.getElementById("reasonOtherChk");
       const otherReasonWrap = document.getElementById("otherReasonWrap");
       const reasonOtherText = document.getElementById("reasonOtherText");
@@ -838,7 +831,6 @@
       const validateAll = () => {
         let ok = true;
         const keys = ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"];
-        keys.forCada = undefined; // 変数汚染防止のためダミー無効化
 
         keys.forEach(k => showError(k, false));
 
@@ -852,7 +844,6 @@
         return ok;
       };
 
-      // 「その他」欄の表示制御
       const syncOtherReasonUI = () => {
         const on = !!(reasonOtherChk && reasonOtherChk.checked);
         if (!otherReasonWrap) return;
@@ -914,7 +905,6 @@ ${p.preferences || "未記入"}
       };
 
       const showThankYouView = () => {
-        // iOSで入力フォーカス由来の拡大が残るのを抑える
         try{
           if (document.activeElement && typeof document.activeElement.blur === "function") {
             document.activeElement.blur();
@@ -928,24 +918,18 @@ ${p.preferences || "未記入"}
           thankYouStage.style.display = "flex";
         }
 
-        // フェードイン付与（控えめ）
         if (thankYouSection) {
           thankYouSection.classList.remove("fade-in");
-          // reflow
           void thankYouSection.offsetWidth;
           thankYouSection.classList.add("fade-in");
         }
 
-        // ヘッダー切替
         if (headerForm) headerForm.style.display = "none";
         if (headerThanks) headerThanks.style.display = "flex";
 
         window.scrollTo({ top: 0, behavior: "auto" });
       };
 
-      // ==============
-      // ライブエラー解除
-      // ==============
       const wireLiveClear = () => {
         form.name.addEventListener("input", () => {
           if (validators.name()) showError("name", false);
@@ -992,9 +976,6 @@ ${p.preferences || "未記入"}
 
       wireLiveClear();
 
-      // ==============
-      // SUBMIT
-      // ==============
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         msg.textContent = "";
