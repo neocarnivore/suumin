@@ -71,6 +71,21 @@
       font-weight: 700;
       letter-spacing: 0.02em;
     }
+
+    /* 画像アイコン用 */
+    .brand-icon{
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      object-fit: cover;
+      box-shadow:
+        0 2px 8px rgba(2, 24, 12, 0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.5);
+      background: #fff;
+      flex: 0 0 28px;
+    }
+
+    /* 画像が設定されていない時のフォールバック */
     .brand-badge{
       width: 28px;
       height: 28px;
@@ -79,6 +94,7 @@
         linear-gradient(135deg, var(--accent), #38d48a);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
     }
+
     .brand small{
       font-weight: 600;
       color: var(--muted);
@@ -296,19 +312,6 @@
       display: none;
     }
 
-    .preview{
-      margin-top: 14px;
-      background: #0b1a12;
-      color: #d1fae5;
-      border-radius: var(--radius-md);
-      padding: 14px 14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 11.5px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      display: none;
-    }
-
     footer{
       padding: 10px 18px 26px;
       color: var(--muted);
@@ -328,12 +331,6 @@
       color: var(--muted);
       margin-top: 8px;
     }
-
-    .divider-soft{
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(31,157,99,0.18), transparent);
-      margin: 12px 0 2px;
-    }
   </style>
 </head>
 
@@ -342,10 +339,22 @@
     <header>
       <div class="header-inner">
         <div class="brand">
-          <span class="brand-badge" aria-hidden="true"></span>
+          <!--
+            ▼アイコン差し替え用
+            ここに「お部屋探しのスーミン」のアイコン画像URLを設定してください。
+            例）src="https://example.com/suumin-icon.png"
+          -->
+          <img
+            class="brand-icon"
+            src="YOUR_SUUMIN_ICON_URL"
+            alt="お部屋探しのスーミン"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+          />
+          <span class="brand-badge" aria-hidden="true" style="display:none;"></span>
+
           <div>
             <div>ご相談フォーム</div>
-            <small>Room Inquiry</small>
+            <small>お部屋探しのスーミン</small>
           </div>
         </div>
         <div class="pill-note">約1分で入力</div>
@@ -354,15 +363,10 @@
 
     <main class="container">
       <section class="hero">
-        <span class="meta">希望条件の入力 → 担当よりご連絡</span>
-        <h1>スムーズにお部屋探しを始めましょう</h1>
+        <span class="meta">希望条件をご入力ください</span>
+        <h1>かんたん1分入力で<br>お部屋探しをスタート</h1>
         <p>
-          下記の項目にご回答いただいた後、担当者よりご連絡いたします。<br>
-          条件をすり合わせたうえで、候補物件のご提案をスタートします。
-        </p>
-        <div class="divider-soft"></div>
-        <p class="hint">
-          LINEアプリ内で開いて送信すると、回答内容がそのまま公式LINEへ届きます。
+          ご希望条件をご入力いただいた後、担当者よりご連絡し、条件に合う物件をご提案いたします。
         </p>
       </section>
 
@@ -374,7 +378,7 @@
               <div class="section-title">お名前 <span class="req">必須</span></div>
               <div class="section-sub">ひらがなだけでも可能です</div>
               <label for="name">お名前</label>
-              <input id="name" name="name" type="text" placeholder="例：ねお" required />
+              <input id="name" name="name" type="text" required />
               <div class="error" data-error-for="name">お名前を入力してください。</div>
             </div>
 
@@ -415,7 +419,6 @@
               <div class="section-title">職場の最寄り駅 <span class="hint">任意</span></div>
               <label for="workStation">職場の最寄り駅（任意）</label>
               <input id="workStation" name="workStation" type="text" placeholder="例：新宿 / 渋谷 / 大手町" />
-              <div class="hint">通勤目安や路線提案に使います。</div>
             </div>
           </div>
         </div>
@@ -423,14 +426,14 @@
         <!-- 住み替え理由 -->
         <div class="section">
           <div class="section-title">住み替えの理由 <span class="req">必須</span></div>
-          <div class="section-sub">該当するものを選択してください（複数可）</div>
+          <div class="section-sub">（複数選択可）</div>
 
           <div class="checks" role="group" aria-label="住み替えの理由">
             <label class="check-item"><input type="checkbox" name="reasons" value="転勤・転職" />転勤・転職</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="同棲" />同棲</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="更新" />更新</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="結婚・同棲" />結婚・同棲</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="契約更新" />契約更新</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="独立" />独立</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="現状の不満" />現状の不満</label>
+            <label class="check-item"><input type="checkbox" name="reasons" value="気分転換・現状に不満" />気分転換・現状に不満</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="気分転換" />気分転換</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="その他" />その他</label>
           </div>
@@ -451,7 +454,7 @@
 
           <div class="field">
             <div class="section-title">希望の間取り <span class="req">必須</span></div>
-            <div class="section-sub">該当するものを選択してください（複数可）</div>
+            <div class="section-sub">（複数選択可）</div>
             <div class="checks" role="group" aria-label="希望の間取り">
               <label class="check-item"><input type="checkbox" name="layouts" value="1R" />1R</label>
               <label class="check-item"><input type="checkbox" name="layouts" value="1K" />1K</label>
@@ -501,11 +504,11 @@
 
           <div class="field">
             <div class="section-title">こだわり条件 <span class="hint">任意</span></div>
-            <label for="preferences">こだわり条件（任意）</label>
+            <label for="preferences">こだわり条件</label>
             <textarea
               id="preferences"
               name="preferences"
-              placeholder="例：2階以上 / バストイレ別 / 宅配BOX / 角部屋 / ペット可 / 仕事用デスクが置ける広さ など"
+              placeholder="例：2階以上 / バストイレ別 / 宅配BOX / 角部屋 / ペット可 など"
             ></textarea>
           </div>
         </div>
@@ -526,7 +529,6 @@
               required
               pattern="^[0-9-+ ]{9,15}$"
             />
-            <div class="hint">ハイフンありでもOK（例：090-1234-5678）。</div>
             <div class="error" data-error-for="phone">有効なお電話番号を入力してください。</div>
           </div>
         </div>
@@ -536,13 +538,12 @@
           <button class="btn btn-primary" type="submit">回答する</button>
           <button class="btn btn-ghost" type="reset">入力をリセット</button>
           <div id="formMsg" class="hint"></div>
-          <pre id="preview" class="preview"></pre>
         </div>
       </form>
     </main>
 
     <footer>
-      ※LINEアプリ内で送信すると、回答内容があなたの公式LINEへ届きます。
+      <!-- フッター文言は要望に合わせて簡素化 -->
     </footer>
   </div>
 
@@ -572,7 +573,6 @@
   <script>
     (function(){
       const form = document.getElementById("consultForm");
-      const preview = document.getElementById("preview");
       const msg = document.getElementById("formMsg");
 
       const showError = (name, on) => {
@@ -665,54 +665,40 @@ ${p.preferences || "未記入"}
         );
       };
 
-      const showPreview = (payload, title) => {
-        preview.textContent =
-          `${title}\n\n` +
-          JSON.stringify(payload, null, 2);
-
-        preview.style.display = "block";
-      };
-
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         msg.textContent = "";
-        preview.style.display = "none";
 
         const ok = validate();
         if(!ok){
-          msg.textContent = "未入力の必須項目があります。赤いメッセージをご確認ください。";
+          // 指定文言は削除要望のため表示しない
           return;
         }
 
         const payload = buildPayload();
 
-        // ①：LINEアプリ内(LIFF)なら、そのままメッセージ送信
+        // LINEアプリ内(LIFF)なら、そのままメッセージ送信
         try{
           if (window.liff && liffReady && liff.isInClient()) {
             const text = buildLineText(payload);
             await liff.sendMessages([{ type: "text", text }]);
 
             msg.textContent = "送信しました。担当よりご連絡いたします。";
-            showPreview(payload, "✅ LINEへ送信済み（控え）");
-
             // 必要なら自動クローズ
             // liff.closeWindow();
             return;
           }
         }catch(err){
-          // 送信失敗時はフォールバック
+          // 送信失敗時は下の案内へ
         }
 
-        // フォールバック：LINE外で開かれた場合はデモ表示
-        msg.textContent =
-          "このページはLINEアプリ内で送信すると回答が届く仕様です。現在はブラウザ表示のため、送信デモを表示しています。";
-        showPreview(payload, "✅ 送信デモ（LINEアプリ内で送信すると公式LINEに届きます）");
+        // LINE外で開かれた場合：デモ表示などは行わず、簡易案内のみ
+        msg.textContent = "LINEアプリから開いて送信してください。";
       });
 
       form.addEventListener("reset", () => {
         ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
           .forEach(k => showError(k, false));
-        preview.style.display = "none";
         msg.textContent = "";
       });
     })();
