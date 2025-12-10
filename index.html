@@ -16,9 +16,9 @@
       --text: #0f172a;
       --muted: #6b7280;
       --line: #e5e7eb;
-      --accent: #1f9d63;       /* メインの綺麗な緑 */
-      --accent-2: #0f7a4a;     /* 濃い緑 */
-      --accent-soft: #e7f7ef; /* 淡い緑背景 */
+      --accent: #1f9d63;
+      --accent-2: #0f7a4a;
+      --accent-soft: #e7f7ef;
       --danger: #dc2626;
       --shadow: 0 10px 28px rgba(2, 24, 12, 0.08);
       --radius-lg: 16px;
@@ -72,27 +72,29 @@
       letter-spacing: 0.02em;
     }
 
-    /* 画像アイコン用 */
+    /* 高解像度アイコンを綺麗に見せる想定でサイズを少し最適化 */
     .brand-icon{
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 9px;
       object-fit: cover;
+      flex: 0 0 30px;
+      background: #fff;
       box-shadow:
         0 2px 8px rgba(2, 24, 12, 0.12),
         inset 0 0 0 1px rgba(255,255,255,0.5);
-      background: #fff;
-      flex: 0 0 28px;
+      /* 画像の縮小表示を前提にシャープ感を保ちやすく */
+      image-rendering: auto;
     }
 
     /* 画像が設定されていない時のフォールバック */
     .brand-badge{
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 9px;
-      background:
-        linear-gradient(135deg, var(--accent), #38d48a);
+      background: linear-gradient(135deg, var(--accent), #38d48a);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+      display: none;
     }
 
     .brand small{
@@ -109,7 +111,7 @@
       background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
-      padding: 26px 22px;
+      padding: 26px 22px 22px;
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
@@ -126,15 +128,13 @@
       pointer-events: none;
     }
 
-    .hero h1{
-      margin: 0 0 8px;
-      font-size: clamp(22px, 3.2vw, 28px);
+    /* ヒーロー見出し周りを微調整 */
+    .hero-head{
+      display: flex;
+      flex-direction: column;
+      gap: 6px; /* 余白を少し詰めて上寄せ感 */
     }
-    .hero p{
-      margin: 0 0 10px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+
     .hero .meta{
       display: inline-flex;
       align-items: center;
@@ -146,6 +146,24 @@
       font-size: 12px;
       color: var(--accent-2);
       font-weight: 600;
+      /* 「少しだけ左上に綺麗に」 */
+      margin-left: -2px;
+      transform: translateY(-2px);
+      width: fit-content;
+    }
+
+    .hero h1{
+      margin: 0 0 2px;
+      /* ちょっとだけ大きく */
+      font-size: clamp(24px, 3.6vw, 31px);
+      /* ほんの少し上に詰める感覚 */
+      letter-spacing: 0.01em;
+    }
+
+    .hero p{
+      margin: 0 0 6px;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     form{
@@ -319,17 +337,23 @@
       text-align: center;
     }
 
-    .pill-note{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #fff;
+    /* サンクス画面 */
+    .thankyou{
+      margin-top: 18px;
+      background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
       border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
+      border-radius: var(--radius-lg);
+      padding: 32px 22px 28px;
+      box-shadow: var(--shadow);
+    }
+    .thankyou h2{
+      margin: 0 0 8px;
+      font-size: clamp(20px, 3vw, 24px);
+    }
+    .thankyou p{
+      margin: 0;
       color: var(--muted);
-      margin-top: 8px;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -341,8 +365,8 @@
         <div class="brand">
           <!--
             ▼アイコン差し替え用
-            ここに「お部屋探しのスーミン」のアイコン画像URLを設定してください。
-            例）src="https://example.com/suumin-icon.png"
+            高解像度で綺麗に見せたい場合は、
+            できれば 60px以上の正方形画像を用意してここに指定してください。
           -->
           <img
             class="brand-icon"
@@ -350,7 +374,7 @@
             alt="お部屋探しのスーミン"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
           />
-          <span class="brand-badge" aria-hidden="true" style="display:none;"></span>
+          <span class="brand-badge" aria-hidden="true"></span>
 
           <div>
             <div>ご相談フォーム</div>
@@ -362,14 +386,24 @@
     </header>
 
     <main class="container">
-      <section class="hero">
-        <span class="meta">希望条件をご入力ください</span>
-        <h1>かんたん1分入力で<br>お部屋探しをスタート</h1>
-        <p>
-          ご希望条件をご入力いただいた後、担当者よりご連絡し、条件に合う物件をご提案いたします。
-        </p>
+      <!-- HERO -->
+      <section class="hero" id="heroSection">
+        <div class="hero-head">
+          <span class="meta">希望条件をご入力ください</span>
+          <h1>かんたん1分入力で<br>お部屋探しをスタート</h1>
+          <p>
+            ご希望条件をご入力後、担当者より、条件に合うお部屋をご提案いたします。
+          </p>
+        </div>
       </section>
 
+      <!-- THANK YOU -->
+      <section class="thankyou" id="thankYouSection" style="display:none;">
+        <h2>ご回答ありがとうございます。</h2>
+        <p>担当者より、条件に合うお部屋をご提案いたします。</p>
+      </section>
+
+      <!-- FORM -->
       <form id="consultForm" novalidate>
         <!-- 基本情報 -->
         <div class="section">
@@ -433,7 +467,6 @@
             <label class="check-item"><input type="checkbox" name="reasons" value="結婚・同棲" />結婚・同棲</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="契約更新" />契約更新</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="独立" />独立</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="気分転換・現状に不満" />気分転換・現状に不満</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="気分転換" />気分転換</label>
             <label class="check-item"><input type="checkbox" name="reasons" value="その他" />その他</label>
           </div>
@@ -542,9 +575,7 @@
       </form>
     </main>
 
-    <footer>
-      <!-- フッター文言は要望に合わせて簡素化 -->
-    </footer>
+    <footer></footer>
   </div>
 
   <script>
@@ -574,6 +605,8 @@
     (function(){
       const form = document.getElementById("consultForm");
       const msg = document.getElementById("formMsg");
+      const hero = document.getElementById("heroSection");
+      const thankYou = document.getElementById("thankYouSection");
 
       const showError = (name, on) => {
         const el = document.querySelector(`[data-error-for="${name}"]`);
@@ -587,40 +620,59 @@
           .map(i => i.value);
       };
 
-      const validate = () => {
+      const onlyDigits = (v) => (v || "").replace(/[^\d]/g, "");
+
+      // 送信時の厳密判定（日本の一般的な10〜11桁を許容）
+      const isPhoneValidForSubmit = (raw) => {
+        const d = onlyDigits(raw);
+        return d.length === 10 || d.length === 11;
+      };
+
+      // 入力中のゆるい判定：
+      // - 11桁(または10〜11桁)に到達したらOK
+      // - 先頭が一般的な文頭なら途中でもOK扱いでエラーを消す
+      const isPhoneValidForLive = (raw) => {
+        const d = onlyDigits(raw);
+        if (!d) return false;
+        if (isPhoneValidForSubmit(raw)) return true;
+
+        if (d.length >= 3) {
+          const p3 = d.slice(0, 3);
+          if (["090","080","070","050"].includes(p3)) return true;
+        }
+        if (d.length >= 2) {
+          const p2 = d.slice(0, 2);
+          if (["03","06"].includes(p2)) return true;
+        }
+        return false;
+      };
+
+      const validators = {
+        name: () => form.name.value.trim().length > 0,
+        occupation: () => !!form.occupation.value.trim(),
+        moveIn: () => !!form.moveIn.value.trim(),
+        reasons: () => getCheckedValues(`input[name="reasons"]`).length > 0,
+        area: () => form.area.value.trim().length > 0,
+        layouts: () => getCheckedValues(`input[name="layouts"]`).length > 0,
+        rentMax: () => {
+          const v = form.rentMax.value;
+          return !(v === "" || Number(v) <= 0);
+        },
+        phone: () => isPhoneValidForSubmit(form.phone.value.trim())
+      };
+
+      const validateAll = () => {
         let ok = true;
+        const keys = ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"];
+        keys.forEach(k => showError(k, false));
 
-        const name = form.name.value.trim();
-        const occupation = form.occupation.value.trim();
-        const moveIn = form.moveIn.value.trim();
-        const area = form.area.value.trim();
-        const rentMax = form.rentMax.value;
-        const phone = form.phone.value.trim();
-
-        const reasons = getCheckedValues(`input[name="reasons"]`);
-        const layouts = getCheckedValues(`input[name="layouts"]`);
-
-        ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
-          .forEach(k => showError(k, false));
-
-        if(!name){ showError("name", true); ok = false; }
-        if(!occupation){ showError("occupation", true); ok = false; }
-        if(!moveIn){ showError("moveIn", true); ok = false; }
-
-        if(reasons.length === 0){ showError("reasons", true); ok = false; }
-
-        if(!area){ showError("area", true); ok = false; }
-        if(layouts.length === 0){ showError("layouts", true); ok = false; }
-
-        if(rentMax === "" || Number(rentMax) <= 0){
-          showError("rentMax", true); ok = false;
-        }
-
-        const phonePattern = /^[0-9-+ ]{9,15}$/;
-        if(!phone || !phonePattern.test(phone)){
-          showError("phone", true); ok = false;
-        }
-
+        keys.forEach(k => {
+          const pass = validators[k]();
+          if (!pass) {
+            showError(k, true);
+            ok = false;
+          }
+        });
         return ok;
       };
 
@@ -665,35 +717,88 @@ ${p.preferences || "未記入"}
         );
       };
 
+      const showThankYou = () => {
+        if (hero) hero.style.display = "none";
+        form.style.display = "none";
+        if (thankYou) thankYou.style.display = "block";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      // ==============
+      // ライブエラー解除
+      // ==============
+      const wireLiveClear = () => {
+        form.name.addEventListener("input", () => {
+          if (validators.name()) showError("name", false);
+        });
+
+        form.occupation.addEventListener("change", () => {
+          if (validators.occupation()) showError("occupation", false);
+        });
+
+        form.moveIn.addEventListener("change", () => {
+          if (validators.moveIn()) showError("moveIn", false);
+        });
+
+        form.area.addEventListener("input", () => {
+          if (validators.area()) showError("area", false);
+        });
+
+        form.rentMax.addEventListener("input", () => {
+          if (validators.rentMax()) showError("rentMax", false);
+        });
+
+        // 住み替え理由
+        document.querySelectorAll(`input[name="reasons"]`).forEach(cb => {
+          cb.addEventListener("change", () => {
+            if (validators.reasons()) showError("reasons", false);
+          });
+        });
+
+        // 間取り
+        document.querySelectorAll(`input[name="layouts"]`).forEach(cb => {
+          cb.addEventListener("change", () => {
+            if (validators.layouts()) showError("layouts", false);
+          });
+        });
+
+        // 電話番号：入力中はゆるく、送信時は厳密
+        form.phone.addEventListener("input", () => {
+          const v = form.phone.value.trim();
+          if (isPhoneValidForLive(v)) showError("phone", false);
+        });
+
+        form.phone.addEventListener("blur", () => {
+          // フォーカスアウト時は少し厳しめに
+          if (validators.phone()) showError("phone", false);
+        });
+      };
+
+      wireLiveClear();
+
+      // ==============
+      // SUBMIT
+      // ==============
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         msg.textContent = "";
 
-        const ok = validate();
-        if(!ok){
-          // 指定文言は削除要望のため表示しない
-          return;
-        }
+        const ok = validateAll();
+        if (!ok) return;
 
         const payload = buildPayload();
 
-        // LINEアプリ内(LIFF)なら、そのままメッセージ送信
+        // LIFFクライアント内ならメッセージ送信を試みる
         try{
           if (window.liff && liffReady && liff.isInClient()) {
             const text = buildLineText(payload);
             await liff.sendMessages([{ type: "text", text }]);
-
-            msg.textContent = "送信しました。担当よりご連絡いたします。";
-            // 必要なら自動クローズ
-            // liff.closeWindow();
-            return;
           }
         }catch(err){
-          // 送信失敗時は下の案内へ
+          // 送信失敗でもUIはサンクスへ（ユーザー体験優先）
         }
 
-        // LINE外で開かれた場合：デモ表示などは行わず、簡易案内のみ
-        msg.textContent = "LINEアプリから開いて送信してください。";
+        showThankYou();
       });
 
       form.addEventListener("reset", () => {
