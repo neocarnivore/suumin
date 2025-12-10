@@ -64,6 +64,34 @@
       gap: 12px;
     }
 
+    /* フォーム表示時ヘッダー */
+    .header-form{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+    }
+
+    /* サンクス表示時ヘッダー */
+    .header-thanks{
+      display: none;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+    .thanks-title{
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: 16.5px;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(31,157,99,0.18);
+      box-shadow: 0 6px 14px rgba(2, 24, 12, 0.06);
+    }
+
     .brand{
       display: flex;
       align-items: center;
@@ -72,7 +100,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* 高解像度アイコンを綺麗に見せる想定でサイズを少し最適化 */
+    /* 高解像度アイコンの想定で最適化 */
     .brand-icon{
       width: 30px;
       height: 30px;
@@ -83,11 +111,9 @@
       box-shadow:
         0 2px 8px rgba(2, 24, 12, 0.12),
         inset 0 0 0 1px rgba(255,255,255,0.5);
-      /* 画像の縮小表示を前提にシャープ感を保ちやすく */
       image-rendering: auto;
     }
 
-    /* 画像が設定されていない時のフォールバック */
     .brand-badge{
       width: 30px;
       height: 30px;
@@ -100,6 +126,20 @@
     .brand small{
       font-weight: 600;
       color: var(--muted);
+    }
+
+    .pill-note{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      white-space: nowrap;
     }
 
     .container{
@@ -128,11 +168,10 @@
       pointer-events: none;
     }
 
-    /* ヒーロー見出し周りを微調整 */
     .hero-head{
       display: flex;
       flex-direction: column;
-      gap: 6px; /* 余白を少し詰めて上寄せ感 */
+      gap: 6px;
     }
 
     .hero .meta{
@@ -146,7 +185,6 @@
       font-size: 12px;
       color: var(--accent-2);
       font-weight: 600;
-      /* 「少しだけ左上に綺麗に」 */
       margin-left: -2px;
       transform: translateY(-2px);
       width: fit-content;
@@ -154,9 +192,7 @@
 
     .hero h1{
       margin: 0 0 2px;
-      /* ちょっとだけ大きく */
       font-size: clamp(24px, 3.6vw, 31px);
-      /* ほんの少し上に詰める感覚 */
       letter-spacing: 0.01em;
     }
 
@@ -343,17 +379,20 @@
       background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
-      padding: 32px 22px 28px;
+      padding: 40px 22px 36px;
       box-shadow: var(--shadow);
+      text-align: center; /* 真ん中 */
     }
     .thankyou h2{
-      margin: 0 0 8px;
-      font-size: clamp(20px, 3vw, 24px);
+      margin: 0 0 10px;
+      font-size: clamp(22px, 3.2vw, 26px);
+      letter-spacing: 0.01em;
     }
     .thankyou p{
       margin: 0;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
+      font-size: 14.5px;
     }
   </style>
 </head>
@@ -362,26 +401,33 @@
   <div class="page">
     <header>
       <div class="header-inner">
-        <div class="brand">
-          <!--
-            ▼アイコン差し替え用
-            高解像度で綺麗に見せたい場合は、
-            できれば 60px以上の正方形画像を用意してここに指定してください。
-          -->
-          <img
-            class="brand-icon"
-            src="YOUR_SUUMIN_ICON_URL"
-            alt="お部屋探しのスーミン"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
-          />
-          <span class="brand-badge" aria-hidden="true"></span>
+        <!-- フォーム時ヘッダー -->
+        <div class="header-form" id="headerForm">
+          <div class="brand">
+            <!--
+              ▼アイコン差し替え用
+              できれば 60px以上の正方形画像を指定すると綺麗に出やすいです。
+            -->
+            <img
+              class="brand-icon"
+              src="YOUR_SUUMIN_ICON_URL"
+              alt="お部屋探しのスーミン"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
+            />
+            <span class="brand-badge" aria-hidden="true"></span>
 
-          <div>
-            <div>ご相談フォーム</div>
-            <small>お部屋探しのスーミン</small>
+            <div>
+              <div>ご相談フォーム</div>
+              <small>お部屋探しのスーミン</small>
+            </div>
           </div>
+          <div class="pill-note">約1分で入力</div>
         </div>
-        <div class="pill-note">約1分で入力</div>
+
+        <!-- サンクス時ヘッダー（中央・アイコン/ピルなし） -->
+        <div class="header-thanks" id="headerThanks">
+          <div class="thanks-title">お部屋探しのスーミン</div>
+        </div>
       </div>
     </header>
 
@@ -392,15 +438,18 @@
           <span class="meta">希望条件をご入力ください</span>
           <h1>かんたん1分入力で<br>お部屋探しをスタート</h1>
           <p>
-            ご希望条件をご入力後、担当者より、条件に合うお部屋をご提案いたします。
+            ご希望条件をご入力後、内容を確認のうえ、担当者より条件に合うお部屋をご提案します
           </p>
         </div>
       </section>
 
       <!-- THANK YOU -->
       <section class="thankyou" id="thankYouSection" style="display:none;">
-        <h2>ご回答ありがとうございます。</h2>
-        <p>担当者より、条件に合うお部屋をご提案いたします。</p>
+        <h2>ご回答ありがとうございます😌</h2>
+        <p>
+          いただいた内容を確認のうえ、担当者より条件に合うお部屋をご提案いたします。<br>
+          気になる点やご希望があれば、遠慮なくお知らせください。
+        </p>
       </section>
 
       <!-- FORM -->
@@ -411,14 +460,14 @@
             <div class="field">
               <div class="section-title">お名前 <span class="req">必須</span></div>
               <div class="section-sub">ひらがなだけでも可能です</div>
-              <label for="name">お名前</label>
+              <!-- ラベル削除 -->
               <input id="name" name="name" type="text" required />
               <div class="error" data-error-for="name">お名前を入力してください。</div>
             </div>
 
             <div class="field">
               <div class="section-title">ご職業 <span class="req">必須</span></div>
-              <label for="occupation">ご職業</label>
+              <!-- ラベル削除 -->
               <select id="occupation" name="occupation" required>
                 <option value="">選択してください</option>
                 <option>会社員</option>
@@ -437,7 +486,7 @@
           <div class="grid-2">
             <div class="field">
               <div class="section-title">ご入居時期 <span class="req">必須</span></div>
-              <label for="moveIn">ご入居時期</label>
+              <!-- ラベル削除 -->
               <select id="moveIn" name="moveIn" required>
                 <option value="">選択してください</option>
                 <option>1ヶ月以内</option>
@@ -451,7 +500,7 @@
 
             <div class="field">
               <div class="section-title">職場の最寄り駅 <span class="hint">任意</span></div>
-              <label for="workStation">職場の最寄り駅（任意）</label>
+              <!-- ラベル削除 -->
               <input id="workStation" name="workStation" type="text" placeholder="例：新宿 / 渋谷 / 大手町" />
             </div>
           </div>
@@ -475,11 +524,11 @@
 
         <!-- 希望条件 -->
         <div class="section">
-          <div class="section-title">希望条件</div>
+          <!-- 「希望条件」タイトル削除 -->
 
           <div class="field">
             <div class="section-title">希望エリア <span class="req">必須</span></div>
-            <label for="area">希望エリア</label>
+            <!-- ラベル削除 -->
             <input id="area" name="area" type="text" placeholder="例：中野 / 新宿 / 目黒 / 山手線内側 など" required />
             <div class="hint">複数エリアOK。優先順位があれば一緒に記載してください。</div>
             <div class="error" data-error-for="area">希望エリアを入力してください。</div>
@@ -501,8 +550,8 @@
 
           <div class="grid-2">
             <div class="field">
-              <div class="section-title">お家賃の上限 <span class="req">必須</span></div>
-              <label for="rentMax">お家賃の上限（管理費込）</label>
+              <div class="section-title">お家賃の上限（管理費込） <span class="req">必須</span></div>
+              <!-- ラベル削除 -->
               <input
                 id="rentMax"
                 name="rentMax"
@@ -519,7 +568,7 @@
 
             <div class="field">
               <div class="section-title">築年数 <span class="hint">任意</span></div>
-              <label for="age">築年数（任意）</label>
+              <!-- ラベル削除 -->
               <select id="age" name="age">
                 <option value="">選択してください</option>
                 <option>1年以内</option>
@@ -537,7 +586,7 @@
 
           <div class="field">
             <div class="section-title">こだわり条件 <span class="hint">任意</span></div>
-            <label for="preferences">こだわり条件</label>
+            <!-- ラベル削除 -->
             <textarea
               id="preferences"
               name="preferences"
@@ -552,7 +601,7 @@
 
           <div class="field">
             <div class="section-title">お電話番号 <span class="req">必須</span></div>
-            <label for="phone">お電話番号</label>
+            <!-- ラベル削除 -->
             <input
               id="phone"
               name="phone"
@@ -608,6 +657,9 @@
       const hero = document.getElementById("heroSection");
       const thankYou = document.getElementById("thankYouSection");
 
+      const headerForm = document.getElementById("headerForm");
+      const headerThanks = document.getElementById("headerThanks");
+
       const showError = (name, on) => {
         const el = document.querySelector(`[data-error-for="${name}"]`);
         if(!el) return;
@@ -628,9 +680,7 @@
         return d.length === 10 || d.length === 11;
       };
 
-      // 入力中のゆるい判定：
-      // - 11桁(または10〜11桁)に到達したらOK
-      // - 先頭が一般的な文頭なら途中でもOK扱いでエラーを消す
+      // 入力中のゆるい判定
       const isPhoneValidForLive = (raw) => {
         const d = onlyDigits(raw);
         if (!d) return false;
@@ -717,10 +767,15 @@ ${p.preferences || "未記入"}
         );
       };
 
-      const showThankYou = () => {
+      const showThankYouView = () => {
         if (hero) hero.style.display = "none";
         form.style.display = "none";
         if (thankYou) thankYou.style.display = "block";
+
+        // ヘッダー切替
+        if (headerForm) headerForm.style.display = "none";
+        if (headerThanks) headerThanks.style.display = "flex";
+
         window.scrollTo({ top: 0, behavior: "smooth" });
       };
 
@@ -748,28 +803,24 @@ ${p.preferences || "未記入"}
           if (validators.rentMax()) showError("rentMax", false);
         });
 
-        // 住み替え理由
         document.querySelectorAll(`input[name="reasons"]`).forEach(cb => {
           cb.addEventListener("change", () => {
             if (validators.reasons()) showError("reasons", false);
           });
         });
 
-        // 間取り
         document.querySelectorAll(`input[name="layouts"]`).forEach(cb => {
           cb.addEventListener("change", () => {
             if (validators.layouts()) showError("layouts", false);
           });
         });
 
-        // 電話番号：入力中はゆるく、送信時は厳密
         form.phone.addEventListener("input", () => {
           const v = form.phone.value.trim();
           if (isPhoneValidForLive(v)) showError("phone", false);
         });
 
         form.phone.addEventListener("blur", () => {
-          // フォーカスアウト時は少し厳しめに
           if (validators.phone()) showError("phone", false);
         });
       };
@@ -795,10 +846,10 @@ ${p.preferences || "未記入"}
             await liff.sendMessages([{ type: "text", text }]);
           }
         }catch(err){
-          // 送信失敗でもUIはサンクスへ（ユーザー体験優先）
+          // 送信失敗でもサンクス表示（体験優先）
         }
 
-        showThankYou();
+        showThankYouView();
       });
 
       form.addEventListener("reset", () => {
