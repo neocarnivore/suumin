@@ -6,9 +6,8 @@
   <title>ご相談フォーム</title>
   <meta name="description" content="お部屋探しのご希望条件を1分ほどで入力できる相談フォームです。" />
 
-  <!-- PWA: manifest + theme color -->
-  <link rel="manifest" href="./manifest.webmanifest">
-  <meta name="theme-color" content="#1f9d63">
+  <!-- LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
     :root{
@@ -217,18 +216,18 @@
       .grid-2{ grid-template-columns: 1fr 1fr; }
     }
 
-    .checks, .radios{
+    .checks{
       display: grid;
       gap: 10px 14px;
       grid-template-columns: 1fr 1fr;
     }
     @media (min-width: 720px){
-      .checks, .radios{
+      .checks{
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
-    .check-item, .radio-item{
+    .check-item{
       display: flex;
       align-items: center;
       gap: 8px;
@@ -238,16 +237,15 @@
       background: #fff;
       transition: border .15s ease, background .15s ease, transform .08s ease;
     }
-    .check-item:hover, .radio-item:hover{
+    .check-item:hover{
       border-color: rgba(31,157,99,0.35);
       background: #fbfffd;
     }
-    .check-item:active, .radio-item:active{
+    .check-item:active{
       transform: translateY(1px);
     }
 
-    input[type="checkbox"],
-    input[type="radio"]{
+    input[type="checkbox"]{
       width: 18px;
       height: 18px;
       accent-color: var(--accent);
@@ -364,8 +362,7 @@
         </p>
         <div class="divider-soft"></div>
         <p class="hint">
-          入力内容は仮送信デモです（このHTML単体ではサーバー送信しません）。
-          実運用では送信先APIに接続してください。
+          LINEアプリ内で開いて送信すると、回答内容がそのまま公式LINEへ届きます。
         </p>
       </section>
 
@@ -545,9 +542,32 @@
     </main>
 
     <footer>
-      ※このフォームはサンプルUIです。実運用ではプライバシーポリシーの表示と送信先の実装を行ってください。
+      ※LINEアプリ内で送信すると、回答内容があなたの公式LINEへ届きます。
     </footer>
   </div>
+
+  <script>
+    // =========================
+    // LIFF settings
+    // =========================
+    const LIFF_ID = "YOUR_LIFF_ID"; // ←ここを差し替え
+
+    let liffReady = false;
+
+    async function initLiffSafe(){
+      try{
+        if (!window.liff) return;
+        await liff.init({ liffId: LIFF_ID });
+        liffReady = true;
+      }catch(e){
+        liffReady = false;
+      }
+    }
+
+    window.addEventListener("load", () => {
+      initLiffSafe();
+    });
+  </script>
 
   <script>
     (function(){
@@ -580,7 +600,6 @@
         const reasons = getCheckedValues(`input[name="reasons"]`);
         const layouts = getCheckedValues(`input[name="layouts"]`);
 
-        // reset errors
         ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
           .forEach(k => showError(k, false));
 
@@ -622,27 +641,72 @@
         };
       };
 
-      form.addEventListener("submit", (e) => {
+      const buildLineText = (p) => {
+        const reasons = (p.reasons && p.reasons.length) ? p.reasons.join(" / ") : "未選択";
+        const layouts = (p.layouts && p.layouts.length) ? p.layouts.join(" / ") : "未選択";
+
+        return (
+`【希望条件フォーム】
+お名前：${p.name}
+職業：${p.occupation}
+入居時期：${p.moveIn}
+住み替え理由：${reasons}
+
+希望エリア：${p.area}
+職場最寄り：${p.workStation || "未記入"}
+間取り：${layouts}
+家賃上限：${p.rentMaxManYen}万円
+築年数：${p.buildingAge || "指定なし"}
+
+こだわり：
+${p.preferences || "未記入"}
+
+電話：${p.phone}`
+        );
+      };
+
+      const showPreview = (payload, title) => {
+        preview.textContent =
+          `${title}\n\n` +
+          JSON.stringify(payload, null, 2);
+
+        preview.style.display = "block";
+      };
+
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
         msg.textContent = "";
+        preview.style.display = "none";
 
         const ok = validate();
         if(!ok){
           msg.textContent = "未入力の必須項目があります。赤いメッセージをご確認ください。";
-          preview.style.display = "none";
           return;
         }
 
         const payload = buildPayload();
 
-        // demo preview
-        preview.textContent =
-          "✅ 送信デモ（このHTML単体ではサーバー送信しません）\n\n" +
-          JSON.stringify(payload, null, 2);
+        // ①：LINEアプリ内(LIFF)なら、そのままメッセージ送信
+        try{
+          if (window.liff && liffReady && liff.isInClient()) {
+            const text = buildLineText(payload);
+            await liff.sendMessages([{ type: "text", text }]);
 
-        preview.style.display = "block";
+            msg.textContent = "送信しました。担当よりご連絡いたします。";
+            showPreview(payload, "✅ LINEへ送信済み（控え）");
+
+            // 必要なら自動クローズ
+            // liff.closeWindow();
+            return;
+          }
+        }catch(err){
+          // 送信失敗時はフォールバック
+        }
+
+        // フォールバック：LINE外で開かれた場合はデモ表示
         msg.textContent =
-          "入力ありがとうございます。実運用ではここでAPI送信やLINE連携に接続できます。";
+          "このページはLINEアプリ内で送信すると回答が届く仕様です。現在はブラウザ表示のため、送信デモを表示しています。";
+        showPreview(payload, "✅ 送信デモ（LINEアプリ内で送信すると公式LINEに届きます）");
       });
 
       form.addEventListener("reset", () => {
@@ -652,17 +716,6 @@
         msg.textContent = "";
       });
     })();
-  </script>
-
-  <!-- PWA: Service Worker register -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {
-          /* silent */
-        });
-      });
-    }
   </script>
 </body>
 </html>
