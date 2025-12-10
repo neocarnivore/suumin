@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ご相談フォーム</title>
   <meta name="description" content="お部屋探しのご希望条件を1分ほどで入力できる相談フォームです。" />
+
+  <!-- PWA: manifest + theme color -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#1f9d63">
+
   <style>
     :root{
       --bg: #f7faf8;
@@ -632,7 +637,7 @@
 
         // demo preview
         preview.textContent =
-          "✅ 送信デモ（このHTML単体ではサーバー送信しません）\\n\\n" +
+          "✅ 送信デモ（このHTML単体ではサーバー送信しません）\n\n" +
           JSON.stringify(payload, null, 2);
 
         preview.style.display = "block";
@@ -647,6 +652,17 @@
         msg.textContent = "";
       });
     })();
+  </script>
+
+  <!-- PWA: Service Worker register -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {
+          /* silent */
+        });
+      });
+    }
   </script>
 </body>
 </html>
