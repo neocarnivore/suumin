@@ -2,7 +2,6 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <!-- iOSの入力フォーカス時ズーム対策として、フォーム要素のfont-sizeを16px以上に調整（CSS側で対応） -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ご相談フォーム</title>
   <meta name="description" content="お部屋探しのご希望条件を1分ほどで入力できる相談フォームです。" />
@@ -52,7 +51,7 @@
       display: grid;
       grid-template-rows: auto 1fr auto;
       gap: 20px;
-      overflow-x: hidden; /* 念押し */
+      overflow-x: hidden;
     }
 
     header{
@@ -159,7 +158,7 @@
       width: 100%;
       max-width: 920px;
       margin: 0 auto 24px;
-      padding: 0 4vw; /* 92vw相当の安全な内側余白 */
+      padding: 0 4vw;
     }
     @media (min-width: 920px){
       .container{ padding: 0 18px; }
@@ -260,12 +259,6 @@
       gap: 8px;
       margin-bottom: 14px;
       min-width: 0;
-    }
-
-    label{
-      font-size: 12.5px;
-      font-weight: 600;
-      color: #111827;
     }
 
     /* iOS自動ズーム対策：フォーム文字サイズを16pxへ */
@@ -403,27 +396,93 @@
       display: none;
     }
 
-    /* サンクス画面 */
+    /* ===== 完了（サンクス）画面の“完了感”UI ===== */
+
+    /* 完了カードをやや上寄りに見せるためのラッパ */
+    .thankyou-stage{
+      position: relative;
+      min-height: 62vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 10px;
+    }
+    @media (max-height: 700px){
+      .thankyou-stage{ min-height: 56vh; }
+    }
+
     .thankyou{
-      margin-top: 18px;
+      width: 100%;
+      margin-top: 10px;
       background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
-      padding: 40px 22px 36px;
+      padding: 34px 22px 26px;
       box-shadow: var(--shadow);
       text-align: center;
     }
+
+    /* 控えめフェードイン */
+    @keyframes fadeInSoft {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in{
+      animation: fadeInSoft 200ms ease-out;
+    }
+
+    .done-badge{
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      background: linear-gradient(135deg, #dff6ea, #eafaf2);
+      border: 1px solid rgba(31,157,99,0.18);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 16px rgba(2, 24, 12, 0.06);
+    }
+    .done-badge svg{
+      width: 26px;
+      height: 26px;
+      display: block;
+    }
+
+    .done-kicker{
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--accent-2);
+      letter-spacing: 0.08em;
+      margin-bottom: 2px;
+    }
+
     .thankyou h2{
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-size: clamp(22px, 3.2vw, 26px);
       letter-spacing: 0.01em;
     }
-    .thankyou p{
-      margin: 0;
+
+    .thankyou-body{
       color: var(--muted);
       line-height: 1.7;
       font-size: 14.5px;
-      white-space: normal;
+      margin: 0 0 14px;
+    }
+
+    /* “切り分けて下にレイアウト”する一行 */
+    .thankyou-secondary{
+      font-size: 12.5px;
+      color: #556070;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* カード下の小さな補足ライン（1行） */
+    .thankyou-footnote{
+      text-align: center;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
     }
   </style>
 </head>
@@ -435,10 +494,6 @@
         <!-- フォーム時ヘッダー -->
         <div class="header-form" id="headerForm">
           <div class="brand">
-            <!--
-              ▼アイコン差し替え用
-              できれば 60px以上の正方形画像を指定すると綺麗に出やすいです。
-            -->
             <img
               class="brand-icon"
               src="YOUR_SUUMIN_ICON_URL"
@@ -474,16 +529,40 @@
         </div>
       </section>
 
-      <!-- THANK YOU -->
-      <section class="thankyou" id="thankYouSection" style="display:none;">
-        <h2>ご回答ありがとうございます😌</h2>
-        <p>
-          いただいた内容を確認のうえ、担当者より<br>
-          条件に合うお部屋をご提案いたします。<br>
-          気になる点やご希望があれば、<br>
-          遠慮なくお知らせください。
-        </p>
-      </section>
+      <!-- THANK YOU STAGE -->
+      <div class="thankyou-stage" id="thankYouStage" style="display:none;">
+        <div style="width:100%;">
+          <section class="thankyou" id="thankYouSection">
+            <!-- ✅/チェックアイコン入り丸バッジ -->
+            <div class="done-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" aria-label="完了">
+                <path fill="#ffffff" d="M9.0 16.2l-3.5-3.5a1 1 0 0 1 1.4-1.4l2.8 2.8 7.3-7.3a1 1 0 1 1 1.4 1.4l-8.0 8.0a1 1 0 0 1-1.4 0z"/>
+              </svg>
+            </div>
+
+            <!-- 小さく「送信完了」を添える -->
+            <div class="done-kicker">送信完了</div>
+
+            <h2>ご回答ありがとうございます😌</h2>
+
+            <p class="thankyou-body">
+              いただいた内容をもとに、<br>
+              未公開物件も含めて条件に合うお部屋をピックアップします。<br>
+              無理なご提案はいたしませんので、ご安心くださいませ。
+            </p>
+
+            <!-- 切り分けて下に配置する一文 -->
+            <p class="thankyou-secondary">
+              気になる点やご希望があれば、いつでも遠慮なくお知らせください。
+            </p>
+          </section>
+
+          <!-- カード下の小さな補足ライン（1行） -->
+          <div class="thankyou-footnote">
+            送信内容を確認後、できるだけスムーズにご連絡いたします。
+          </div>
+        </div>
+      </div>
 
       <!-- FORM -->
       <form id="consultForm" novalidate>
@@ -695,7 +774,9 @@
       const form = document.getElementById("consultForm");
       const msg = document.getElementById("formMsg");
       const hero = document.getElementById("heroSection");
-      const thankYou = document.getElementById("thankYouSection");
+
+      const thankYouStage = document.getElementById("thankYouStage");
+      const thankYouSection = document.getElementById("thankYouSection");
 
       const headerForm = document.getElementById("headerForm");
       const headerThanks = document.getElementById("headerThanks");
@@ -719,13 +800,11 @@
 
       const onlyDigits = (v) => (v || "").replace(/[^\d]/g, "");
 
-      // 送信時の厳密判定（日本の一般的な10〜11桁を許容）
       const isPhoneValidForSubmit = (raw) => {
         const d = onlyDigits(raw);
         return d.length === 10 || d.length === 11;
       };
 
-      // 入力中のゆるい判定
       const isPhoneValidForLive = (raw) => {
         const d = onlyDigits(raw);
         if (!d) return false;
@@ -759,6 +838,8 @@
       const validateAll = () => {
         let ok = true;
         const keys = ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"];
+        keys.forCada = undefined; // 変数汚染防止のためダミー無効化
+
         keys.forEach(k => showError(k, false));
 
         keys.forEach(k => {
@@ -782,7 +863,6 @@
       if (reasonOtherChk) {
         reasonOtherChk.addEventListener("change", syncOtherReasonUI);
       }
-      // 初期同期
       syncOtherReasonUI();
 
       const buildPayload = () => {
@@ -843,13 +923,23 @@ ${p.preferences || "未記入"}
 
         if (hero) hero.style.display = "none";
         form.style.display = "none";
-        if (thankYou) thankYou.style.display = "block";
+
+        if (thankYouStage) {
+          thankYouStage.style.display = "flex";
+        }
+
+        // フェードイン付与（控えめ）
+        if (thankYouSection) {
+          thankYouSection.classList.remove("fade-in");
+          // reflow
+          void thankYouSection.offsetWidth;
+          thankYouSection.classList.add("fade-in");
+        }
 
         // ヘッダー切替
         if (headerForm) headerForm.style.display = "none";
         if (headerThanks) headerThanks.style.display = "flex";
 
-        // 位置/スケール違和感を避けるため即スクロールトップ
         window.scrollTo({ top: 0, behavior: "auto" });
       };
 
@@ -880,7 +970,6 @@ ${p.preferences || "未記入"}
         document.querySelectorAll(`input[name="reasons"]`).forEach(cb => {
           cb.addEventListener("change", () => {
             if (validators.reasons()) showError("reasons", false);
-            // 「その他」表示同期
             if (cb === reasonOtherChk) syncOtherReasonUI();
           });
         });
@@ -915,7 +1004,6 @@ ${p.preferences || "未記入"}
 
         const payload = buildPayload();
 
-        // LIFFクライアント内ならメッセージ送信を試みる
         try{
           if (window.liff && liffReady && liff.isInClient()) {
             const text = buildLineText(payload);
@@ -933,7 +1021,6 @@ ${p.preferences || "未記入"}
           .forEach(k => showError(k, false));
         msg.textContent = "";
 
-        // 「その他」欄も初期化
         if (reasonOtherText) reasonOtherText.value = "";
         if (reasonOtherChk) reasonOtherChk.checked = false;
         syncOtherReasonUI();
