@@ -2,736 +2,708 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ご相談フォーム</title>
-  <meta name="description" content="お部屋探しのご希望条件を1分ほどで入力できる相談フォームです。" />
-
-  <!-- LIFF SDK -->
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>コーチング 終了後アンケート</title>
+  <meta name="description" content="4回のコーチング終了後にご回答いただく、レビュー・アンケートフォームです。" />
   <style>
     :root{
-      --bg: #f7faf8;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --accent: #1f9d63;
-      --accent-2: #0f7a4a;
-      --accent-soft: #e7f7ef;
-      --danger: #dc2626;
-      --shadow: 0 10px 28px rgba(2, 24, 12, 0.08);
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --radius-sm: 8px;
+      --bg:#fff8f4;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --line:#f1dfd3;
+      --accent:#ff8a3d;
+      --accent-2:#e85d04;
+      --accent-soft:#fff1e8;
+      --danger:#dc2626;
+      --shadow:0 10px 28px rgba(66,24,2,.08);
+      --radius-lg:16px;
+      --radius-md:10px;
+      --radius-sm:8px;
     }
 
-    *{ box-sizing: border-box; }
+    *{box-sizing:border-box}
 
-    /* 横ズレ/横スクロールの発生を抑制 */
-    html, body{
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    html, body{
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Segoe UI", sans-serif;
-      color: var(--text);
+    html,body{
+      margin:0;
+      padding:0;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+      font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP","Segoe UI",sans-serif;
+      color:var(--text);
       background:
         radial-gradient(1200px 500px at 85% -10%, var(--accent-soft), transparent 60%),
-        radial-gradient(900px 500px at -10% 10%, #f0fbf5, transparent 55%),
+        radial-gradient(900px 500px at -10% 10%, #fff5ee, transparent 55%),
         var(--bg);
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
     }
 
     .page{
-      min-height: 100dvh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 20px;
-      overflow-x: hidden;
+      min-height:100dvh;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:18px;
     }
 
     header{
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      backdrop-filter: blur(10px);
-      background: rgba(247, 250, 248, 0.8);
-      border-bottom: 1px solid rgba(0,0,0,0.04);
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter:blur(10px);
+      background:rgba(255,248,244,.88);
+      border-bottom:1px solid rgba(0,0,0,.04);
     }
 
     .header-inner{
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    /* フォーム表示時ヘッダー */
-    .header-form{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      width: 100%;
-      min-width: 0;
-    }
-
-    /* サンクス表示時ヘッダー */
-    .header-thanks{
-      display: none;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-    }
-    .thanks-title{
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      font-size: 16.5px;
-      color: #0f172a;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid rgba(31,157,99,0.18);
-      box-shadow: 0 6px 14px rgba(2, 24, 12, 0.06);
+      max-width:920px;
+      margin:0 auto;
+      padding:16px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
 
     .brand{
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.02em;
+      min-width:0;
     }
 
-    /* 高解像度アイコンの想定で最適化 */
-    .brand-icon{
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      object-fit: cover;
-      flex: 0 0 30px;
-      background: #fff;
-      box-shadow:
-        0 2px 8px rgba(2, 24, 12, 0.12),
-        inset 0 0 0 1px rgba(255,255,255,0.5);
-      image-rendering: auto;
+    .brand-mark{
+      width:32px;
+      height:32px;
+      border-radius:10px;
+      flex:0 0 32px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#ffd4bf,#fff4ed);
+      border:1px solid rgba(255,138,61,.22);
+      box-shadow:0 2px 6px rgba(66,24,2,.12);
+      font-size:18px;
     }
 
-    .brand-badge{
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      background: linear-gradient(135deg, var(--accent), #38d48a);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
-      display: none;
-    }
-
-    .brand small{
-      font-weight: 600;
-      color: var(--muted);
+    .brand-license{
+      display:block;
+      font-size:10px;
+      color:var(--muted);
+      margin-top:2px;
+      letter-spacing:.02em;
     }
 
     .pill-note{
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
-      white-space: nowrap;
-      flex: 0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:11px;
+      color:var(--muted);
+      white-space:nowrap;
+      flex:0 0 auto;
     }
 
     .container{
-      width: 100%;
-      max-width: 920px;
-      margin: 0 auto 24px;
-      padding: 0 4vw;
+      width:100%;
+      max-width:920px;
+      margin:0 auto 24px;
+      padding:0 4vw;
     }
-    @media (min-width: 920px){
-      .container{ padding: 0 18px; }
+
+    @media (min-width:920px){
+      .container{padding:0 18px;}
     }
 
     .hero{
-      background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 26px 22px 22px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
+      background:linear-gradient(135deg,#ffffff,#ffffff 55%,var(--accent-soft));
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      padding:26px 22px 22px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
     }
+
     .hero::after{
-      content: "";
-      position: absolute;
-      right: -120px;
-      top: -140px;
-      width: 320px;
-      height: 320px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(31,157,99,0.18), transparent 65%);
-      pointer-events: none;
+      content:"";
+      position:absolute;
+      right:-120px;
+      top:-140px;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      background:radial-gradient(circle at 30% 30%, rgba(255,138,61,.18), transparent 65%);
+      pointer-events:none;
     }
 
     .hero-head{
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
 
     .hero .meta{
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      background: var(--accent-soft);
-      border: 1px solid rgba(31,157,99,0.18);
-      border-radius: 999px;
-      font-size: 12px;
-      color: var(--accent-2);
-      font-weight: 600;
-      margin-left: -2px;
-      transform: translateY(-2px);
-      width: fit-content;
-      max-width: 100%;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      background:rgba(255,241,232,.95);
+      border:1px solid rgba(255,138,61,.18);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--accent-2);
+      font-weight:600;
+      margin-left:-2px;
+      transform:translateY(-2px);
+      width:fit-content;
+      max-width:100%;
     }
 
     .hero h1{
-      margin: 0 0 2px;
-      font-size: clamp(24px, 3.6vw, 31px);
-      letter-spacing: 0.01em;
+      margin:0 0 2px;
+      font-size:clamp(24px,3.6vw,31px);
+      letter-spacing:.01em;
+      line-height:1.2;
+      white-space:pre-line;
     }
 
     .hero p{
-      margin: 0 0 6px;
-      color: var(--muted);
-      line-height: 1.6;
+      margin:0 0 6px;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      white-space:pre-line;
     }
 
     form{
-      margin-top: 18px;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      padding: 10px 0 4px;
+      margin-top:18px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow);
+      padding:10px 0 4px;
     }
 
     .section{
-      padding: 18px 22px 6px;
-      border-top: 1px dashed rgba(0,0,0,0.06);
+      padding:18px 22px 6px;
+      border-top:1px dashed rgba(0,0,0,.06);
     }
-    .section:first-child{ border-top: none; }
+
+    .section:first-child{border-top:none}
 
     .section-title{
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin: 0 0 12px;
-      font-size: 15px;
-      font-weight: 700;
+      display:flex;
+      align-items:baseline;
+      gap:8px;
+      margin:0 0 12px;
+      font-size:14px;
+      font-weight:700;
     }
+
     .section-title .req{
-      color: var(--danger);
-      font-size: 12px;
-      font-weight: 700;
+      color:var(--danger);
+      font-size:12px;
+      font-weight:700;
     }
+
     .section-sub{
-      margin: -6px 0 12px;
-      font-size: 12px;
-      color: var(--muted);
+      margin:-6px 0 12px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+      white-space:pre-line;
     }
 
     .field{
-      display: grid;
-      gap: 8px;
-      margin-bottom: 14px;
-      min-width: 0;
-    }
-
-    /* iOS自動ズーム対策：フォーム文字サイズを16pxへ */
-    input[type="text"],
-    input[type="tel"],
-    input[type="number"],
-    select,
-    textarea{
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 12px 12px;
-      font-size: 16px;
-      outline: none;
-      background: #fff;
-      transition: border .15s ease, box-shadow .15s ease, background .15s ease;
-      max-width: 100%;
-    }
-    textarea{
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    input::placeholder, textarea::placeholder{
-      color: #9aa3af;
-    }
-
-    input:focus, select:focus, textarea:focus{
-      border-color: rgba(31,157,99,0.55);
-      box-shadow: 0 0 0 4px rgba(31,157,99,0.12);
-      background: #fcfffd;
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+      min-width:0;
     }
 
     .grid-2{
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1fr;
+      display:grid;
+      gap:16px;
+      grid-template-columns:1fr;
     }
-    @media (min-width: 720px){
-      .grid-2{ grid-template-columns: 1fr 1fr; }
+
+    @media (min-width:720px){
+      .grid-2{grid-template-columns:1fr 1fr;}
+    }
+
+    input[type="text"],
+    select,
+    textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      padding:12px 12px;
+      font-size:16px;
+      outline:none;
+      background:#fff;
+      transition:border .15s ease, box-shadow .15s ease, background .15s ease;
+      max-width:100%;
+    }
+
+    select{
+      font-size:14px;
+      padding-right:44px;
+    }
+
+    textarea{
+      min-height:120px;
+      resize:vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:#9aa3af;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus{
+      border-color:rgba(255,138,61,.55);
+      box-shadow:0 0 0 4px rgba(255,138,61,.12);
+      background:#fffdfa;
+    }
+
+    .inline-label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin:0 0 6px;
+    }
+
+    .seg{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .seg.seg-two{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .seg button{
+      width:100%;
+      padding:11px 10px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .seg button.active{
+      background:linear-gradient(135deg,var(--accent),#ffb36b);
+      color:#fff;
+      border-color:transparent;
+    }
+
+    .review-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:linear-gradient(180deg,#fff,#fffaf7);
+    }
+
+    .stars{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .star-btn{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      font-size:22px;
+      transition:transform .08s ease, border .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+
+    .star-btn:hover{
+      border-color:rgba(255,138,61,.45);
+      background:#fffaf7;
+    }
+
+    .star-btn.active{
+      background:linear-gradient(135deg,var(--accent),#ffb36b);
+      border-color:transparent;
+      box-shadow:0 10px 18px rgba(255,138,61,.18);
+    }
+
+    .star-btn.active span{
+      filter:saturate(1.15);
+    }
+
+    .star-note{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+      min-height:18px;
     }
 
     .checks{
-      display: grid;
-      gap: 10px 14px;
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (min-width: 720px){
-      .checks{
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
+      display:grid;
+      gap:10px;
+      grid-template-columns:1fr;
     }
 
     .check-item{
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 10px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-sm);
-      background: #fff;
-      transition: border .15s ease, background .15s ease, transform .08s ease;
-      min-width: 0;
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      padding:12px 12px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:#fff;
+      transition:border .15s ease, background .15s ease, transform .08s ease;
+      min-width:0;
     }
+
     .check-item:hover{
-      border-color: rgba(31,157,99,0.35);
-      background: #fbfffd;
+      border-color:rgba(255,138,61,.35);
+      background:#fffaf7;
     }
+
     .check-item:active{
-      transform: translateY(1px);
+      transform:translateY(1px);
     }
 
     input[type="checkbox"]{
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-      flex: 0 0 18px;
+      width:18px;
+      height:18px;
+      accent-color:var(--accent);
+      flex:0 0 18px;
+      margin-top:2px;
     }
 
-    .hint{
-      font-size: 11.5px;
-      color: var(--muted);
+    .publish-box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:linear-gradient(180deg,#fff,#fffaf7);
     }
 
     .actions{
-      padding: 18px 22px 22px;
-      display: grid;
-      gap: 10px;
+      padding:18px 22px 22px;
+      display:grid;
+      gap:10px;
     }
 
     .btn{
-      border: none;
-      border-radius: 14px;
-      padding: 14px 14px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .08s ease, filter .15s ease, box-shadow .15s ease;
-    }
-    .btn-primary{
-      background: linear-gradient(135deg, var(--accent), #39d489);
-      color: white;
-      box-shadow: 0 10px 18px rgba(31,157,99,0.22);
-    }
-    .btn-primary:hover{
-      filter: brightness(1.02);
-    }
-    .btn-primary:active{
-      transform: translateY(1px);
+      border:none;
+      border-radius:14px;
+      padding:14px 14px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
     }
 
-    .btn-ghost{
-      background: #fff;
-      border: 1px solid var(--line);
-      color: #111827;
+    .btn-primary{
+      background:linear-gradient(135deg,var(--accent),#ffb36b);
+      color:#fff;
+      box-shadow:0 10px 18px rgba(255,138,61,.22);
     }
+
+    .btn-primary:hover{filter:brightness(1.02)}
+    .btn-primary:active{transform:translateY(1px)}
 
     .error{
-      color: var(--danger);
-      font-size: 11.5px;
-      font-weight: 600;
-      display: none;
+      color:var(--danger);
+      font-size:11.5px;
+      font-weight:600;
+      display:none;
     }
 
-    footer{
-      padding: 10px 18px 26px;
-      color: var(--muted);
-      font-size: 11px;
-      text-align: center;
+    .hint{
+      font-size:11.5px;
+      color:var(--muted);
+      line-height:1.55;
     }
-
-    /* 住み替え理由「その他」入力欄 */
-    .other-reason-wrap{
-      margin-top: 10px;
-      display: none;
-    }
-
-    /* ===== 完了（サンクス）画面の“完了感”UI ===== */
 
     .thankyou-stage{
-      position: relative;
-      min-height: 62vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding-top: 10px;
-    }
-    @media (max-height: 700px){
-      .thankyou-stage{ min-height: 56vh; }
+      position:relative;
+      min-height:62vh;
+      display:none;
+      justify-content:center;
+      align-items:flex-start;
+      padding-top:10px;
     }
 
     .thankyou{
-      width: 100%;
-      margin-top: 10px;
-      background: linear-gradient(135deg, #ffffff, #ffffff 55%, var(--accent-soft));
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 34px 22px 26px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-
-    @keyframes fadeInSoft {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in{
-      animation: fadeInSoft 200ms ease-out;
+      width:100%;
+      margin-top:10px;
+      background:linear-gradient(135deg,#ffffff,#ffffff 55%,var(--accent-soft));
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      padding:34px 22px 26px;
+      box-shadow:var(--shadow);
+      text-align:center;
     }
 
     .done-badge{
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      margin: 0 auto 10px;
-      background: linear-gradient(135deg, #dff6ea, #eafaf2);
-      border: 1px solid rgba(31,157,99,0.18);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 8px 16px rgba(2, 24, 12, 0.06);
-    }
-    .done-badge svg{
-      width: 26px;
-      height: 26px;
-      display: block;
+      width:54px;
+      height:54px;
+      border-radius:50%;
+      margin:0 auto 10px;
+      background:linear-gradient(135deg,#ffd9c5,#fff2ea);
+      border:1px solid rgba(255,138,61,.22);
+      display:grid;
+      place-items:center;
+      box-shadow:0 8px 16px rgba(66,24,2,.06);
     }
 
     .done-kicker{
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--accent-2);
-      letter-spacing: 0.08em;
-      margin-bottom: 2px;
+      font-size:11.5px;
+      font-weight:700;
+      color:var(--accent-2);
+      letter-spacing:.08em;
+      margin-bottom:2px;
     }
 
     .thankyou h2{
-      margin: 0 0 12px;
-      font-size: clamp(22px, 3.2vw, 26px);
-      letter-spacing: 0.01em;
-    }
-
-    .thankyou-body{
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 14.5px;
-      margin: 0 0 14px;
+      margin:0 0 12px;
+      font-size:clamp(22px,3.2vw,26px);
+      letter-spacing:.01em;
     }
 
     .thankyou-secondary{
-      font-size: 12.5px;
-      color: #556070;
-      font-weight: 600;
-      margin: 0;
+      font-size:12.5px;
+      color:#556070;
+      font-weight:600;
+      margin:0;
+      line-height:1.7;
+      white-space:pre-line;
     }
 
-    .thankyou-footnote{
-      text-align: center;
-      margin-top: 10px;
-      font-size: 11px;
-      color: var(--muted);
+    footer{
+      padding:10px 18px 26px;
+      color:var(--muted);
+      font-size:11px;
+      text-align:center;
+    }
+
+    @media (max-width:560px){
+      .header-inner{
+        padding:14px;
+        gap:8px;
+      }
+
+      .brand{
+        gap:8px;
+      }
+
+      .pill-note{
+        font-size:10px;
+        padding:5px 8px;
+      }
+
+      .container{
+        padding:0 10px;
+      }
+
+      .hero{
+        padding:22px 16px 18px;
+      }
+
+      .section{
+        padding:16px 14px 6px;
+      }
     }
   </style>
 </head>
-
 <body>
   <div class="page">
     <header>
       <div class="header-inner">
-        <!-- フォーム時ヘッダー -->
-        <div class="header-form" id="headerForm">
-          <div class="brand">
-            <img
-              class="brand-icon"
-              src="YOUR_SUUMIN_ICON_URL"
-              alt="お部屋探しのスーミン"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';"
-            />
-            <span class="brand-badge" aria-hidden="true"></span>
-
-            <div>
-              <div>ご相談フォーム</div>
-              <small>お部屋探しのスーミン</small>
-            </div>
+        <div class="brand">
+          <div class="brand-mark">🥩</div>
+          <div>
+            <div>コーチング 終了後アンケート</div>
+            <span class="brand-license">ねおカーニボア</span>
           </div>
-          <div class="pill-note">約1分で入力</div>
         </div>
-
-        <!-- サンクス時ヘッダー（中央・アイコン/ピルなし） -->
-        <div class="header-thanks" id="headerThanks">
-          <div class="thanks-title">お部屋探しのスーミン</div>
-        </div>
+        <div class="pill-note">レビューご協力のお願い</div>
       </div>
     </header>
 
     <main class="container">
-      <!-- HERO -->
       <section class="hero" id="heroSection">
         <div class="hero-head">
-          <span class="meta">希望条件をご入力ください</span>
-          <h1>かんたん1分入力で<br>お部屋探しをスタート</h1>
-          <p>
-            ご希望条件をご入力後、内容を確認のうえ、担当者より条件に合うお部屋をご提案します
-          </p>
+          <span class="meta">4回のミーティング終了後アンケート</span>
+          <h1>ここまで本当に
+おつかれさまでした。</h1>
+          <p>今後の改善と、これから参加する方の参考のために
+率直なご感想をいただけるとうれしいです。</p>
         </div>
       </section>
 
-      <!-- THANK YOU STAGE -->
-      <div class="thankyou-stage" id="thankYouStage" style="display:none;">
+      <div class="thankyou-stage" id="thankYouStage">
         <div style="width:100%;">
-          <section class="thankyou" id="thankYouSection">
+          <section class="thankyou">
             <div class="done-badge" aria-hidden="true">
-              <svg viewBox="0 0 24 24" role="img" aria-label="完了">
+              <svg viewBox="0 0 24 24" width="26" height="26">
                 <path fill="#ffffff" d="M9.0 16.2l-3.5-3.5a1 1 0 0 1 1.4-1.4l2.8 2.8 7.3-7.3a1 1 0 1 1 1.4 1.4l-8.0 8.0a1 1 0 0 1-1.4 0z"/>
               </svg>
             </div>
-
             <div class="done-kicker">送信完了</div>
-
-            <h2>ご回答ありがとうございます😌</h2>
-
-            <!-- ここを指定の改行・文面に更新 -->
-            <p class="thankyou-body">
-              いただいた内容をもとに、未公開物件も含めて<br>
-              条件に合うお部屋をピックアップします。<br>
-              無理なご提案はいたしませんので、<br>
-              ご安心くださいませ。
-            </p>
-
-            <p class="thankyou-secondary">
-              気になる点やご希望があれば、<br>
-              いつでも遠慮なくお知らせください。
-            </p>
+            <h2>ご協力ありがとうございます</h2>
+            <p class="thankyou-secondary">いただいた内容は今後の改善に活かします。
+掲載許可をいただいたレビューは、匿名でサイトに使用させていただく場合があります。</p>
           </section>
-
-          <div class="thankyou-footnote">
-            送信内容を確認後、できるだけスムーズにご連絡いたします。
-          </div>
         </div>
       </div>
 
-      <!-- FORM -->
-      <form id="consultForm" novalidate>
-        <!-- 基本情報 -->
+      <form id="reviewForm" novalidate>
         <div class="section">
-          <div class="grid-2">
-            <div class="field">
-              <div class="section-title">お名前 <span class="req">必須</span></div>
-              <div class="section-sub">ひらがなだけでも可能です。</div>
-              <input id="name" name="name" type="text" required />
-              <div class="error" data-error-for="name">お名前を入力してください。</div>
-            </div>
+          <div class="section-title">基本情報 <span class="req">必須</span></div>
 
-            <div class="field">
-              <div class="section-title">ご職業 <span class="req">必須</span></div>
-              <select id="occupation" name="occupation" required>
-                <option value="">選択してください</option>
-                <option>会社員</option>
-                <option>公務員</option>
-                <option>派遣・アルバイト</option>
-                <option>個人事業主・自営業</option>
-                <option>経営者・役員</option>
-                <option>夜職</option>
-                <option>学生</option>
-                <option>無職・その他</option>
-              </select>
-              <div class="error" data-error-for="occupation">ご職業を選択してください。</div>
+          <div class="review-card">
+            <div class="field" style="margin-bottom:0;">
+              <label class="inline-label">LINEプロフィール名</label>
+              <input id="lineName" name="lineName" type="text" required placeholder="例：neo" />
             </div>
           </div>
 
-          <div class="grid-2">
-            <div class="field">
-              <div class="section-title">ご入居時期 <span class="req">必須</span></div>
-              <select id="moveIn" name="moveIn" required>
-                <option value="">選択してください</option>
-                <option>1ヶ月以内</option>
-                <option>1〜2ヶ月以内</option>
-                <option>2〜3ヶ月以内</option>
-                <option>それ以上先</option>
-                <option>未定</option>
-              </select>
-              <div class="error" data-error-for="moveIn">ご入居時期を選択してください。</div>
-            </div>
-
-            <div class="field">
-              <div class="section-title">職場の最寄り駅 <span class="hint">任意</span></div>
-              <input id="workStation" name="workStation" type="text" placeholder="例：新宿 / 渋谷 / 大手町" />
-            </div>
-          </div>
+          <div class="error" data-error-for="basic">LINEプロフィール名を入力してください。</div>
         </div>
 
-        <!-- 住み替え理由 -->
         <div class="section">
-          <div class="section-title">住み替えの理由 <span class="req">必須</span></div>
-          <div class="section-sub">（複数選択可）</div>
+          <div class="section-title">満足度評価 <span class="req">必須</span></div>
+          <div class="section-sub">星をタップして評価してください</div>
 
-          <div class="checks" role="group" aria-label="住み替えの理由">
-            <label class="check-item"><input type="checkbox" name="reasons" value="転勤・転職" />転勤・転職</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="結婚・同棲" />結婚・同棲</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="契約更新" />契約更新</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="独立" />独立</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="気分転換" />気分転換</label>
-            <label class="check-item"><input type="checkbox" name="reasons" value="その他" id="reasonOtherChk" />その他</label>
+          <div class="review-card">
+            <div class="field" style="margin-bottom:0;">
+              <label class="inline-label">全体の満足度</label>
+              <div class="stars" id="starWrap">
+                <button type="button" class="star-btn" data-star="1" aria-label="1">
+                  <span>★</span>
+                </button>
+                <button type="button" class="star-btn" data-star="2" aria-label="2">
+                  <span>★</span>
+                </button>
+                <button type="button" class="star-btn" data-star="3" aria-label="3">
+                  <span>★</span>
+                </button>
+                <button type="button" class="star-btn" data-star="4" aria-label="4">
+                  <span>★</span>
+                </button>
+                <button type="button" class="star-btn" data-star="5" aria-label="5">
+                  <span>★</span>
+                </button>
+              </div>
+              <div class="star-note" id="starNote">未選択</div>
+              <input type="hidden" id="rating" name="rating" value="" />
+            </div>
           </div>
 
-          <div class="other-reason-wrap" id="otherReasonWrap">
+          <div class="error" data-error-for="rating">星評価を選択してください。</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">感想・変化 <span class="req">必須</span></div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label class="inline-label">特によかった点</label>
+              <textarea id="bestPoint" name="bestPoint" placeholder="例：説明がわかりやすかった、方向性が明確になった など"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="inline-label">改善してほしい点</label>
+              <textarea id="improvePoint" name="improvePoint" placeholder="例：もう少し具体例が欲しかった、資料があるとうれしい など"></textarea>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="inline-label">4回を通して感じた変化</label>
+            <textarea id="changes" name="changes" placeholder="例：食事の迷いが減った、肌の状態が変わった、継続しやすくなった など"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="inline-label">これから受ける人に伝えるなら？</label>
+            <textarea id="reviewText" name="reviewText" placeholder="サイト掲載用レビューとしても使える内容だとうれしいです。"></textarea>
+          </div>
+
+          <div class="error" data-error-for="review">感想を入力してください。</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">追加アンケート <span class="req">必須</span></div>
+
+          <div class="grid-2">
+            <div class="field">
+              <label class="inline-label">このコーチングを人に勧めたいですか？</label>
+              <div class="seg seg-two" id="recommendSeg">
+                <button type="button" data-recommend="はい">はい</button>
+                <button type="button" data-recommend="いいえ" class="active">いいえ</button>
+              </div>
+              <input type="hidden" id="recommend" name="recommend" value="いいえ" />
+            </div>
+
+            <div class="field">
+              <label class="inline-label">満足度の理由</label>
+              <select id="reasonType" name="reasonType" required>
+                <option value="">選択してください</option>
+                <option value="結果">結果</option>
+                <option value="わかりやすさ">わかりやすさ</option>
+                <option value="継続しやすさ">継続しやすさ</option>
+                <option value="サポート">サポート</option>
+                <option value="その他">その他</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="error" data-error-for="extra">追加アンケートを入力してください。</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">掲載について <span class="req">必須</span></div>
+          <div class="section-sub">サイトへ掲載する場合は、匿名で掲載します。</div>
+
+          <div class="publish-box">
+            <div class="checks">
+              <label class="check-item">
+                <input type="checkbox" id="allowPublish" name="allowPublish" value="yes" />
+                <span>匿名でのレビュー掲載に協力します</span>
+              </label>
+
+              <label class="check-item">
+                <input type="checkbox" id="allowEdit" name="allowEdit" value="yes" />
+                <span>掲載時、意味を変えない範囲で文章を整えることに同意します</span>
+              </label>
+            </div>
+
             <div class="field" style="margin-top:12px;">
-              <textarea
-                id="reasonOtherText"
-                name="reasonOtherText"
-                placeholder="その他の理由をご記入ください（任意）"
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="error" data-error-for="reasons">住み替え理由を1つ以上選択してください。</div>
-        </div>
-
-        <!-- 希望条件 -->
-        <div class="section">
-          <div class="field">
-            <div class="section-title">希望エリア <span class="req">必須</span></div>
-            <input
-              id="area"
-              name="area"
-              type="text"
-              placeholder="例：中野 / 新宿 / 目黒 / 山手線内回り など"
-              required
-            />
-            <div class="hint">複数エリアOK。優先順位があれば一緒に記載してください。</div>
-            <div class="error" data-error-for="area">希望エリアを入力してください。</div>
-          </div>
-
-          <div class="field">
-            <div class="section-title">希望の間取り <span class="req">必須</span></div>
-            <div class="section-sub">（複数選択可）</div>
-            <div class="checks" role="group" aria-label="希望の間取り">
-              <label class="check-item"><input type="checkbox" name="layouts" value="1R" />1R</label>
-              <label class="check-item"><input type="checkbox" name="layouts" value="1K" />1K</label>
-              <label class="check-item"><input type="checkbox" name="layouts" value="1DK" />1DK</label>
-              <label class="check-item"><input type="checkbox" name="layouts" value="1LDK" />1LDK</label>
-              <label class="check-item"><input type="checkbox" name="layouts" value="2LDK" />2LDK</label>
-              <label class="check-item"><input type="checkbox" name="layouts" value="3LDK" />3LDK</label>
-            </div>
-            <div class="error" data-error-for="layouts">希望の間取りを1つ以上選択してください。</div>
-          </div>
-
-          <div class="grid-2">
-            <div class="field">
-              <div class="section-title">お家賃の上限（管理費込） <span class="req">必須</span></div>
-              <input
-                id="rentMax"
-                name="rentMax"
-                type="number"
-                inputmode="decimal"
-                step="0.1"
-                min="0"
-                placeholder="例：12 / 13.5 / 15"
-                required
-              />
-              <div class="hint">単位は「万円」を想定しています。</div>
-              <div class="error" data-error-for="rentMax">お家賃の上限を入力してください。</div>
-            </div>
-
-            <div class="field">
-              <div class="section-title">築年数 <span class="hint">任意</span></div>
-              <select id="age" name="age">
-                <option value="">選択してください</option>
-                <option>1年以内</option>
-                <option>3年以内</option>
-                <option>5年以内</option>
-                <option>7年以内</option>
-                <option>10年以内</option>
-                <option>15年以内</option>
-                <option>20年以内</option>
-                <option>その他</option>
+              <label class="inline-label">掲載時の表示名</label>
+              <select id="displayNameType" name="displayNameType">
+                <option value="匿名（イニシャルなし）">匿名（イニシャルなし）</option>
+                <option value="匿名（イニシャルのみ）">匿名（イニシャルのみ）</option>
               </select>
-              <div class="hint">こだわりがなければ未選択でOK。</div>
             </div>
           </div>
 
-          <div class="field">
-            <div class="section-title">こだわり条件 <span class="hint">任意</span></div>
-            <textarea
-              id="preferences"
-              name="preferences"
-              placeholder="例：2階以上 / バストイレ別 / 宅配BOX / 角部屋 / ペット可 など"
-            ></textarea>
-          </div>
+          <div class="error" data-error-for="publish">掲載可否を選択してください。</div>
         </div>
 
-        <!-- 連絡先 -->
-        <div class="section">
-          <div class="section-title">ご連絡先</div>
-
-          <div class="field">
-            <div class="section-title">お電話番号 <span class="req">必須</span></div>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              inputmode="tel"
-              placeholder="例：09012345678"
-              required
-              pattern="^[0-9-+ ]{9,15}$"
-            />
-            <div class="error" data-error-for="phone">有効なお電話番号を入力してください。</div>
-          </div>
-        </div>
-
-        <!-- アクション -->
         <div class="actions">
-          <button class="btn btn-primary" type="submit">回答する</button>
-          <button class="btn btn-ghost" type="reset">入力をリセット</button>
+          <button class="btn btn-primary" type="submit">アンケートを送信</button>
           <div id="formMsg" class="hint"></div>
         </div>
       </form>
@@ -740,272 +712,195 @@
     <footer></footer>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    // =========================
-    // LIFF settings
-    // =========================
-    const LIFF_ID = "YOUR_LIFF_ID"; // ←ここを差し替え
+    (() => {
+      const CONFIG = {
+        EMAILJS_PUBLIC_KEY: "QedlQxUXH2yDJJvjU",
+        EMAILJS_SERVICE_ID: "service_sgac4or",
+        EMAILJS_TEMPLATE_ID: "template_8rakpen"
+      };
 
-    let liffReady = false;
-
-    async function initLiffSafe(){
-      try{
-        if (!window.liff) return;
-        await liff.init({ liffId: LIFF_ID });
-        liffReady = true;
-      }catch(e){
-        liffReady = false;
-      }
-    }
-
-    window.addEventListener("load", () => {
-      initLiffSafe();
-    });
-  </script>
-
-  <script>
-    (function(){
-      const form = document.getElementById("consultForm");
+      const form = document.getElementById("reviewForm");
       const msg = document.getElementById("formMsg");
       const hero = document.getElementById("heroSection");
-
       const thankYouStage = document.getElementById("thankYouStage");
-      const thankYouSection = document.getElementById("thankYouSection");
-
-      const headerForm = document.getElementById("headerForm");
-      const headerThanks = document.getElementById("headerThanks");
-
-      const reasonOtherChk = document.getElementById("reasonOtherChk");
-      const otherReasonWrap = document.getElementById("otherReasonWrap");
-      const reasonOtherText = document.getElementById("reasonOtherText");
 
       const showError = (name, on) => {
         const el = document.querySelector(`[data-error-for="${name}"]`);
-        if(!el) return;
-        el.style.display = on ? "block" : "none";
+        if (el) el.style.display = on ? "block" : "none";
       };
 
-      const getCheckedValues = (selector) => {
-        return Array.from(document.querySelectorAll(selector))
-          .filter(i => i.checked)
-          .map(i => i.value);
+      const bindSeg = (wrapId, hiddenId, key) => {
+        const wrap = document.getElementById(wrapId);
+        const hidden = document.getElementById(hiddenId);
+        if (!wrap || !hidden) return;
+
+        wrap.addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          wrap.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          hidden.value = btn.dataset[key] || "";
+          showError("extra", false);
+        });
       };
 
-      const onlyDigits = (v) => (v || "").replace(/[^\d]/g, "");
+      bindSeg("recommendSeg", "recommend", "recommend");
 
-      const isPhoneValidForSubmit = (raw) => {
-        const d = onlyDigits(raw);
-        return d.length === 10 || d.length === 11;
+      const starWrap = document.getElementById("starWrap");
+      const rating = document.getElementById("rating");
+      const starNote = document.getElementById("starNote");
+      const starLabels = {
+        "1":"かなり不満",
+        "2":"やや不満",
+        "3":"普通",
+        "4":"満足",
+        "5":"とても満足"
       };
 
-      const isPhoneValidForLive = (raw) => {
-        const d = onlyDigits(raw);
-        if (!d) return false;
-        if (isPhoneValidForSubmit(raw)) return true;
+      starWrap.addEventListener("click", (e) => {
+        const btn = e.target.closest(".star-btn");
+        if (!btn) return;
+        const value = btn.dataset.star;
+        rating.value = value;
 
-        if (d.length >= 3) {
-          const p3 = d.slice(0, 3);
-          if (["090","080","070","050"].includes(p3)) return true;
-        }
-        if (d.length >= 2) {
-          const p2 = d.slice(0, 2);
-          if (["03","06"].includes(p2)) return true;
-        }
-        return false;
-      };
+        [...starWrap.querySelectorAll(".star-btn")].forEach(el => {
+          el.classList.toggle("active", Number(el.dataset.star) <= Number(value));
+        });
 
-      const validators = {
-        name: () => form.name.value.trim().length > 0,
-        occupation: () => !!form.occupation.value.trim(),
-        moveIn: () => !!form.moveIn.value.trim(),
-        reasons: () => getCheckedValues(`input[name="reasons"]`).length > 0,
-        area: () => form.area.value.trim().length > 0,
-        layouts: () => getCheckedValues(`input[name="layouts"]`).length > 0,
-        rentMax: () => {
-          const v = form.rentMax.value;
-          return !(v === "" || Number(v) <= 0);
-        },
-        phone: () => isPhoneValidForSubmit(form.phone.value.trim())
+        starNote.textContent = `${value} / 5　${starLabels[value]}`;
+        showError("rating", false);
+      });
+
+      const validateReview = () => {
+        return Boolean(
+          form.bestPoint.value.trim() ||
+          form.improvePoint.value.trim() ||
+          form.changes.value.trim() ||
+          form.reviewText.value.trim()
+        );
       };
 
       const validateAll = () => {
         let ok = true;
-        const keys = ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"];
 
-        keys.forEach(k => showError(k, false));
+        ["basic","rating","review","extra","publish"].forEach(k => showError(k, false));
 
-        keys.forEach(k => {
-          const pass = validators[k]();
-          if (!pass) {
-            showError(k, true);
-            ok = false;
-          }
-        });
+        if (!form.lineName.value.trim()) {
+          showError("basic", true);
+          ok = false;
+        }
+
+        if (!form.rating.value.trim()) {
+          showError("rating", true);
+          ok = false;
+        }
+
+        if (!validateReview()) {
+          showError("review", true);
+          ok = false;
+        }
+
+        if (!form.reasonType.value.trim() || !form.recommend.value.trim()) {
+          showError("extra", true);
+          ok = false;
+        }
+
+        if (form.allowEdit.checked && !form.allowPublish.checked) {
+          showError("publish", true);
+          ok = false;
+        }
+
         return ok;
       };
 
-      const syncOtherReasonUI = () => {
-        const on = !!(reasonOtherChk && reasonOtherChk.checked);
-        if (!otherReasonWrap) return;
-        otherReasonWrap.style.display = on ? "block" : "none";
-        if (!on && reasonOtherText) reasonOtherText.value = "";
-      };
-
-      if (reasonOtherChk) {
-        reasonOtherChk.addEventListener("change", syncOtherReasonUI);
-      }
-      syncOtherReasonUI();
-
-      const buildPayload = () => {
-        const reasons = getCheckedValues(`input[name="reasons"]`);
-        const otherText = (reasonOtherChk && reasonOtherChk.checked && reasonOtherText)
-          ? reasonOtherText.value.trim()
-          : "";
-
+      const buildTemplateParams = () => {
         return {
-          name: form.name.value.trim(),
-          occupation: form.occupation.value.trim(),
-          moveIn: form.moveIn.value.trim(),
-          reasons,
-          reasonOtherDetail: otherText,
-          area: form.area.value.trim(),
-          workStation: form.workStation.value.trim(),
-          layouts: getCheckedValues(`input[name="layouts"]`),
-          rentMaxManYen: Number(form.rentMax.value || 0),
-          buildingAge: form.age.value.trim(),
-          preferences: form.preferences.value.trim(),
-          phone: form.phone.value.trim(),
-          submittedAt: new Date().toISOString()
+          line_name: form.lineName.value.trim(),
+          rating: form.rating.value,
+          rating_label: starLabels[form.rating.value] || "",
+          best_point: form.bestPoint.value.trim(),
+          improve_point: form.improvePoint.value.trim(),
+          changes: form.changes.value.trim(),
+          review_text: form.reviewText.value.trim(),
+          recommend: form.recommend.value,
+          reason_type: form.reasonType.value,
+          allow_publish: form.allowPublish.checked ? "はい" : "いいえ",
+          allow_edit: form.allowEdit.checked ? "はい" : "いいえ",
+          display_name_type: form.displayNameType.value,
+          submitted_at: new Date().toLocaleString("ja-JP")
         };
       };
 
-      const buildLineText = (p) => {
-        const reasons = (p.reasons && p.reasons.length) ? p.reasons.join(" / ") : "未選択";
-        const layouts = (p.layouts && p.layouts.length) ? p.layouts.join(" / ") : "未選択";
-        const otherLine = p.reasonOtherDetail ? `\nその他理由：${p.reasonOtherDetail}` : "";
-
-        return (
-`【希望条件フォーム】
-お名前：${p.name}
-職業：${p.occupation}
-入居時期：${p.moveIn}
-住み替え理由：${reasons}${otherLine}
-
-希望エリア：${p.area}
-職場最寄り：${p.workStation || "未記入"}
-間取り：${layouts}
-家賃上限：${p.rentMaxManYen}万円
-築年数：${p.buildingAge || "指定なし"}
-
-こだわり：
-${p.preferences || "未記入"}
-
-電話：${p.phone}`
-        );
-      };
-
       const showThankYouView = () => {
-        try{
-          if (document.activeElement && typeof document.activeElement.blur === "function") {
-            document.activeElement.blur();
-          }
-        }catch(e){}
-
-        if (hero) hero.style.display = "none";
+        hero.style.display = "none";
         form.style.display = "none";
-
-        if (thankYouStage) {
-          thankYouStage.style.display = "flex";
-        }
-
-        if (thankYouSection) {
-          thankYouSection.classList.remove("fade-in");
-          void thankYouSection.offsetWidth;
-          thankYouSection.classList.add("fade-in");
-        }
-
-        if (headerForm) headerForm.style.display = "none";
-        if (headerThanks) headerThanks.style.display = "flex";
-
-        window.scrollTo({ top: 0, behavior: "auto" });
+        thankYouStage.style.display = "flex";
+        window.scrollTo({top:0, behavior:"auto"});
       };
 
-      const wireLiveClear = () => {
-        form.name.addEventListener("input", () => {
-          if (validators.name()) showError("name", false);
-        });
-
-        form.occupation.addEventListener("change", () => {
-          if (validators.occupation()) showError("occupation", false);
-        });
-
-        form.moveIn.addEventListener("change", () => {
-          if (validators.moveIn()) showError("moveIn", false);
-        });
-
-        form.area.addEventListener("input", () => {
-          if (validators.area()) showError("area", false);
-        });
-
-        form.rentMax.addEventListener("input", () => {
-          if (validators.rentMax()) showError("rentMax", false);
-        });
-
-        document.querySelectorAll(`input[name="reasons"]`).forEach(cb => {
-          cb.addEventListener("change", () => {
-            if (validators.reasons()) showError("reasons", false);
-            if (cb === reasonOtherChk) syncOtherReasonUI();
-          });
-        });
-
-        document.querySelectorAll(`input[name="layouts"]`).forEach(cb => {
-          cb.addEventListener("change", () => {
-            if (validators.layouts()) showError("layouts", false);
-          });
-        });
-
-        form.phone.addEventListener("input", () => {
-          const v = form.phone.value.trim();
-          if (isPhoneValidForLive(v)) showError("phone", false);
-        });
-
-        form.phone.addEventListener("blur", () => {
-          if (validators.phone()) showError("phone", false);
-        });
+      const initEmailJs = () => {
+        if (
+          CONFIG.EMAILJS_PUBLIC_KEY &&
+          !CONFIG.EMAILJS_PUBLIC_KEY.startsWith("REPLACE_") &&
+          window.emailjs
+        ) {
+          emailjs.init({ publicKey: CONFIG.EMAILJS_PUBLIC_KEY });
+          return true;
+        }
+        return false;
       };
 
-      wireLiveClear();
+      const emailReady = initEmailJs();
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         msg.textContent = "";
 
-        const ok = validateAll();
-        if (!ok) return;
+        if (!validateAll()) return;
 
-        const payload = buildPayload();
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        msg.textContent = "送信中です…";
 
-        try{
-          if (window.liff && liffReady && liff.isInClient()) {
-            const text = buildLineText(payload);
-            await liff.sendMessages([{ type: "text", text }]);
+        try {
+          const params = buildTemplateParams();
+
+          if (
+            !emailReady ||
+            CONFIG.EMAILJS_SERVICE_ID.startsWith("REPLACE_") ||
+            CONFIG.EMAILJS_TEMPLATE_ID.startsWith("REPLACE_")
+          ) {
+            throw new Error("EmailJS設定が未完了です");
           }
-        }catch(err){
-          // 送信失敗でもサンクス表示（体験優先）
+
+          await emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, params);
+
+          msg.textContent = "送信が完了しました。";
+          showThankYouView();
+        } catch (err) {
+          console.error(err);
+          msg.textContent = "送信に失敗しました。EmailJS設定または通信環境をご確認ください。";
+          alert("送信に失敗しました。HTML内の EmailJS 設定値を確認してください。");
+        } finally {
+          submitBtn.disabled = false;
         }
-
-        showThankYouView();
       });
 
-      form.addEventListener("reset", () => {
-        ["name","occupation","moveIn","reasons","area","layouts","rentMax","phone"]
-          .forEach(k => showError(k, false));
-        msg.textContent = "";
-
-        if (reasonOtherText) reasonOtherText.value = "";
-        if (reasonOtherChk) reasonOtherChk.checked = false;
-        syncOtherReasonUI();
+      [
+        "lineName","bestPoint","improvePoint","changes","reviewText"
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener("input", () => {
+          showError("basic", false);
+          showError("review", false);
+        });
       });
+
+      document.getElementById("reasonType").addEventListener("change", () => showError("extra", false));
+      document.getElementById("allowPublish").addEventListener("change", () => showError("publish", false));
+      document.getElementById("allowEdit").addEventListener("change", () => showError("publish", false));
     })();
   </script>
 </body>
