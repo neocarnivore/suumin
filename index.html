@@ -335,6 +335,11 @@
       transition:transform .08s ease, border .15s ease, background .15s ease, box-shadow .15s ease;
     }
 
+    .star-btn span{
+      color:#cbd5e1;
+      transition:color .15s ease;
+    }
+
     .star-btn:hover{
       border-color:rgba(255,138,61,.45);
       background:#fffaf7;
@@ -347,7 +352,8 @@
     }
 
     .star-btn.active span{
-      filter:saturate(1.15);
+      color:#fff;
+      filter:none;
     }
 
     .star-note{
@@ -397,6 +403,13 @@
       border-radius:14px;
       padding:14px;
       background:linear-gradient(180deg,#fff,#fffaf7);
+    }
+
+    .publish-note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
     }
 
     .actions{
@@ -565,7 +578,7 @@
             <div class="done-kicker">送信完了</div>
             <h2>ご協力ありがとうございます</h2>
             <p class="thankyou-secondary">いただいた内容は今後の改善に活かします。
-掲載許可をいただいたレビューは、匿名でサイトに使用させていただく場合があります。</p>
+掲載許可をいただいたレビューは、完全匿名でサイトに使用させていただく場合があります。</p>
           </section>
         </div>
       </div>
@@ -577,7 +590,7 @@
           <div class="review-card">
             <div class="field" style="margin-bottom:0;">
               <label class="inline-label">LINEプロフィール名</label>
-              <input id="lineName" name="lineName" type="text" required placeholder="例：neo" />
+              <input id="lineName" name="lineName" type="text" required />
             </div>
           </div>
 
@@ -621,19 +634,14 @@
 
           <div class="grid-2">
             <div class="field">
-              <label class="inline-label">特によかった点</label>
-              <textarea id="bestPoint" name="bestPoint" placeholder="例：説明がわかりやすかった、方向性が明確になった など"></textarea>
+              <label class="inline-label">良かった点</label>
+              <textarea id="bestPoint" name="bestPoint" placeholder="例：方向性が明確になった、肌の状態が変わった など"></textarea>
             </div>
 
             <div class="field">
               <label class="inline-label">改善してほしい点</label>
               <textarea id="improvePoint" name="improvePoint" placeholder="例：もう少し具体例が欲しかった、資料があるとうれしい など"></textarea>
             </div>
-          </div>
-
-          <div class="field">
-            <label class="inline-label">4回を通して感じた変化</label>
-            <textarea id="changes" name="changes" placeholder="例：食事の迷いが減った、肌の状態が変わった、継続しやすくなった など"></textarea>
           </div>
 
           <div class="field">
@@ -645,37 +653,22 @@
         </div>
 
         <div class="section">
-          <div class="section-title">追加アンケート <span class="req">必須</span></div>
+          <div class="section-title">このコーチングを人に勧めたいと思いますか？ <span class="req">必須</span></div>
 
-          <div class="grid-2">
-            <div class="field">
-              <label class="inline-label">このコーチングを人に勧めたいですか？</label>
-              <div class="seg seg-two" id="recommendSeg">
-                <button type="button" data-recommend="はい">はい</button>
-                <button type="button" data-recommend="いいえ" class="active">いいえ</button>
-              </div>
-              <input type="hidden" id="recommend" name="recommend" value="いいえ" />
+          <div class="field">
+            <div class="seg seg-two" id="recommendSeg">
+              <button type="button" data-recommend="はい">はい</button>
+              <button type="button" data-recommend="いいえ">いいえ</button>
             </div>
-
-            <div class="field">
-              <label class="inline-label">満足度の理由</label>
-              <select id="reasonType" name="reasonType" required>
-                <option value="">選択してください</option>
-                <option value="結果">結果</option>
-                <option value="わかりやすさ">わかりやすさ</option>
-                <option value="継続しやすさ">継続しやすさ</option>
-                <option value="サポート">サポート</option>
-                <option value="その他">その他</option>
-              </select>
-            </div>
+            <input type="hidden" id="recommend" name="recommend" value="" />
           </div>
 
-          <div class="error" data-error-for="extra">追加アンケートを入力してください。</div>
+          <div class="error" data-error-for="extra">「はい」または「いいえ」を選択してください。</div>
         </div>
 
         <div class="section">
-          <div class="section-title">掲載について <span class="req">必須</span></div>
-          <div class="section-sub">サイトへ掲載する場合は、匿名で掲載します。</div>
+          <div class="section-title">Webサイト掲載について <span class="req">必須</span></div>
+          <div class="section-sub">サイトへ掲載する場合は、完全匿名で掲載します。ご協力いただけるととても嬉しいです。</div>
 
           <div class="publish-box">
             <div class="checks">
@@ -683,20 +676,8 @@
                 <input type="checkbox" id="allowPublish" name="allowPublish" value="yes" />
                 <span>匿名でのレビュー掲載に協力します</span>
               </label>
-
-              <label class="check-item">
-                <input type="checkbox" id="allowEdit" name="allowEdit" value="yes" />
-                <span>掲載時、意味を変えない範囲で文章を整えることに同意します</span>
-              </label>
             </div>
-
-            <div class="field" style="margin-top:12px;">
-              <label class="inline-label">掲載時の表示名</label>
-              <select id="displayNameType" name="displayNameType">
-                <option value="匿名（イニシャルなし）">匿名（イニシャルなし）</option>
-                <option value="匿名（イニシャルのみ）">匿名（イニシャルのみ）</option>
-              </select>
-            </div>
+            <div class="publish-note">掲載時、誤字・脱字を整える場合があります。</div>
           </div>
 
           <div class="error" data-error-for="publish">掲載可否を選択してください。</div>
@@ -777,7 +758,6 @@
         return Boolean(
           form.bestPoint.value.trim() ||
           form.improvePoint.value.trim() ||
-          form.changes.value.trim() ||
           form.reviewText.value.trim()
         );
       };
@@ -802,13 +782,8 @@
           ok = false;
         }
 
-        if (!form.reasonType.value.trim() || !form.recommend.value.trim()) {
+        if (!form.recommend.value.trim()) {
           showError("extra", true);
-          ok = false;
-        }
-
-        if (form.allowEdit.checked && !form.allowPublish.checked) {
-          showError("publish", true);
           ok = false;
         }
 
@@ -822,13 +797,9 @@
           rating_label: starLabels[form.rating.value] || "",
           best_point: form.bestPoint.value.trim(),
           improve_point: form.improvePoint.value.trim(),
-          changes: form.changes.value.trim(),
           review_text: form.reviewText.value.trim(),
           recommend: form.recommend.value,
-          reason_type: form.reasonType.value,
           allow_publish: form.allowPublish.checked ? "はい" : "いいえ",
-          allow_edit: form.allowEdit.checked ? "はい" : "いいえ",
-          display_name_type: form.displayNameType.value,
           submitted_at: new Date().toLocaleString("ja-JP")
         };
       };
@@ -889,7 +860,7 @@
       });
 
       [
-        "lineName","bestPoint","improvePoint","changes","reviewText"
+        "lineName","bestPoint","improvePoint","reviewText"
       ].forEach(id => {
         const el = document.getElementById(id);
         el.addEventListener("input", () => {
@@ -898,9 +869,7 @@
         });
       });
 
-      document.getElementById("reasonType").addEventListener("change", () => showError("extra", false));
       document.getElementById("allowPublish").addEventListener("change", () => showError("publish", false));
-      document.getElementById("allowEdit").addEventListener("change", () => showError("publish", false));
     })();
   </script>
 </body>
